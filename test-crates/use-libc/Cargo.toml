@@ -6,4 +6,4 @@ publish = false
 
 [dependencies]
 # Request that rustix use the libc backend.
-rustix = { path = "../..", features = ["use-libc"] }
+rustix = { path = "../..", package = "laputa-rustix", features = ["use-libc"] }

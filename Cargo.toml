@@ -1,19 +1,23 @@
 [package]
-name = "rustix"
+name = "laputa-rustix"
 version = "1.1.6"
 authors = [
     "Dan Gohman <dev@sunfishcode.online>",
     "Jakub Konka <kubkon@jakubkonka.com>",
 ]
 description = "Safe Rust bindings to POSIX/Unix/Linux syscall-like APIs"
-documentation = "https://docs.rs/rustix"
+documentation = "https://docs.rs/laputa-rustix"
 license = "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT"
-repository = "https://github.com/bytecodealliance/rustix"
+repository = "https://github.com/laputa-systems/rustix"
 edition = "2021"
 keywords = ["api", "file", "network", "safe", "syscall"]
 categories = ["os::unix-apis", "date-and-time", "filesystem", "network-programming"]
 include = ["src", "build.rs", "Cargo.toml", "COPYRIGHT", "LICENSE*", "/*.md", "benches"]
 rust-version = "1.65"
+
+[lib]
+name = "rustix"
+path = "src/lib.rs"
 
 [hints]
 # Most users use a fraction of the rustix API surface area, so this reduces compilation times

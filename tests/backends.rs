@@ -42,7 +42,7 @@ fn test_backends() {
         assert!(
             has_dependency(
                 "test-crates/use-default",
-                &["--features=rustix/use-libc"],
+                &["--features=laputa-rustix/use-libc"],
                 &[],
                 &[],
                 "libc"
@@ -106,7 +106,7 @@ fn test_backends() {
     assert!(
         has_dependency(
             "test-crates/use-default",
-            &["--features=rustix/use-libc"],
+            &["--features=laputa-rustix/use-libc"],
             &[],
             &[],
             libc_dep

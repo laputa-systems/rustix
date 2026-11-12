@@ -6,4 +6,4 @@ publish = false
 
 [dependencies]
 # Request that rustix use the default backend.
-rustix = { path = "../.." }
+rustix = { path = "../..", package = "laputa-rustix" }
