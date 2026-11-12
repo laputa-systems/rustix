@@ -1,7 +1,6 @@
 //! Tests for [`rustix::process`].
 
 #![cfg(feature = "process")]
-#![cfg(not(windows))]
 #![cfg_attr(core_c_str, feature(core_c_str))]
 
 #[cfg(not(any(

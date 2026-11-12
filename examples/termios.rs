@@ -1,7 +1,7 @@
 //! A command which demonstrates using `tcgetattr` and `tcsetattr` including
 //! enabling raw (press any key) input.
 
-#[cfg(all(not(windows), feature = "termios"))]
+#[cfg(feature = "termios")]
 fn main() -> std::io::Result<()> {
     use rustix::termios::{tcgetattr, tcsetattr, OptionalActions};
     use std::io::{Read as _, Write as _};
@@ -43,7 +43,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-#[cfg(any(windows, not(feature = "termios")))]
+#[cfg(any(not(feature = "termios")))]
 fn main() -> Result<(), &'static str> {
-    Err("This example requires --features=termios and is not supported on Windows.")
+    Err("This example requires --features=termios.")
 }

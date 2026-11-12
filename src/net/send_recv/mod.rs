@@ -12,7 +12,6 @@ use core::cmp::min;
 pub use backend::net::send_recv::{RecvFlags, ReturnFlags, SendFlags};
 
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita"
@@ -20,7 +19,6 @@ pub use backend::net::send_recv::{RecvFlags, ReturnFlags, SendFlags};
 mod msg;
 
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita"
@@ -38,7 +36,6 @@ pub use msg::*;
 ///  - [POSIX]
 ///  - [Linux]
 ///  - [Apple]
-///  - [Winsock]
 ///  - [FreeBSD]
 ///  - [NetBSD]
 ///  - [OpenBSD]
@@ -50,7 +47,6 @@ pub use msg::*;
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/recv.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/recv.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/recv.2.html
-/// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-recv
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?query=recv&sektion=2
 /// [NetBSD]: https://man.netbsd.org/recv.2
 /// [OpenBSD]: https://man.openbsd.org/recv.2
@@ -81,7 +77,6 @@ pub fn recv<Fd: AsFd, Buf: Buffer<u8>>(
 ///  - [POSIX]
 ///  - [Linux]
 ///  - [Apple]
-///  - [Winsock]
 ///  - [FreeBSD]
 ///  - [NetBSD]
 ///  - [OpenBSD]
@@ -93,7 +88,6 @@ pub fn recv<Fd: AsFd, Buf: Buffer<u8>>(
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/send.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/send.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/send.2.html
-/// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-send
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?query=send&sektion=2
 /// [NetBSD]: https://man.netbsd.org/send.2
 /// [OpenBSD]: https://man.openbsd.org/send.2
@@ -117,7 +111,6 @@ pub fn send<Fd: AsFd>(fd: Fd, buf: &[u8], flags: SendFlags) -> io::Result<usize>
 ///  - [POSIX]
 ///  - [Linux]
 ///  - [Apple]
-///  - [Winsock]
 ///  - [FreeBSD]
 ///  - [NetBSD]
 ///  - [OpenBSD]
@@ -129,7 +122,6 @@ pub fn send<Fd: AsFd>(fd: Fd, buf: &[u8], flags: SendFlags) -> io::Result<usize>
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/recvfrom.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/recvfrom.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/recvfrom.2.html
-/// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-recvfrom
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?query=recvfrom&sektion=2
 /// [NetBSD]: https://man.netbsd.org/recvfrom.2
 /// [OpenBSD]: https://man.openbsd.org/recvfrom.2
@@ -161,7 +153,6 @@ pub fn recvfrom<Fd: AsFd, Buf: Buffer<u8>>(
 ///  - [POSIX]
 ///  - [Linux]
 ///  - [Apple]
-///  - [Winsock]
 ///  - [FreeBSD]
 ///  - [NetBSD]
 ///  - [OpenBSD]
@@ -173,7 +164,6 @@ pub fn recvfrom<Fd: AsFd, Buf: Buffer<u8>>(
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/sendto.html
 /// [Linux]: https://man7.org/linux/man-pages/man2/sendto.2.html
 /// [Apple]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sendto.2.html
-/// [Winsock]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-sendto
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?query=sendto&sektion=2
 /// [NetBSD]: https://man.netbsd.org/sendto.2
 /// [OpenBSD]: https://man.openbsd.org/sendto.2

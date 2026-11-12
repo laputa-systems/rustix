@@ -18,7 +18,6 @@ use crate::utils::as_ptr;
 use core::mem::{size_of, MaybeUninit};
 use core::ptr::null_mut;
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita"
@@ -183,7 +182,6 @@ pub(crate) fn accept(sockfd: BorrowedFd<'_>) -> io::Result<OwnedFd> {
 }
 
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita"
@@ -217,7 +215,6 @@ pub(crate) fn recvmsg(
 }
 
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita"
@@ -239,7 +236,6 @@ pub(crate) fn sendmsg(
 }
 
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita"
@@ -283,7 +279,6 @@ pub(crate) fn sendmmsg(
 
 #[cfg(not(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "espidf",
     target_os = "haiku",
@@ -318,7 +313,6 @@ pub(crate) fn acceptfrom(sockfd: BorrowedFd<'_>) -> io::Result<(OwnedFd, Option<
 
 #[cfg(not(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "espidf",
     target_os = "haiku",
@@ -347,7 +341,6 @@ pub(crate) fn acceptfrom_with(
 /// have no flags, so we can discard it here.
 #[cfg(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "espidf",
     target_os = "haiku",
@@ -364,7 +357,6 @@ pub(crate) fn accept_with(sockfd: BorrowedFd<'_>, _flags: SocketFlags) -> io::Re
 /// have no flags, so we can discard it here.
 #[cfg(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "espidf",
     target_os = "haiku",
@@ -408,7 +400,6 @@ pub(crate) fn getpeername(sockfd: BorrowedFd<'_>) -> io::Result<Option<SocketAdd
     }
 }
 
-#[cfg(not(windows))]
 pub(crate) fn socketpair(
     domain: AddressFamily,
     type_: SocketType,

@@ -62,7 +62,6 @@ jobs:
         cargo update --package=lock_api --precise=0.4.13
         cargo update --package=rayon --precise=1.10.0
         cargo update --package=rayon-core --precise=1.12.1
-        cargo update --package=windows-sys --precise=0.60.2
         cargo update --package=quote --precise=1.0.41
         cargo update --package=itoa --precise=1.0.15
         cargo update --package=serde_json --precise=1.0.145
@@ -105,7 +104,6 @@ jobs:
         sparcv9-sun-solaris
         aarch64-linux-android
         aarch64-apple-ios
-        i686-pc-windows-msvc
     - if: matrix.rust != '1.65'
       run: >
         rustup target add
@@ -157,7 +155,6 @@ jobs:
     - run: cargo check --workspace --release -vv --target=sparcv9-sun-solaris --features=all-apis --all-targets
     - run: cargo check --workspace --release -vv --target=aarch64-apple-ios --features=all-apis --all-targets
     - run: cargo check --workspace --release -vv --target=aarch64-linux-android --features=use-libc,net,std,alloc,event,fs,mm,param,pipe,use-libc-auxv,libc_errno --all-targets
-    - run: cargo check --workspace --release -vv --target=i686-pc-windows-msvc --features=all-apis --all-targets
 
   check_no_default_features:
     name: Check --no-default-features
@@ -249,7 +246,6 @@ jobs:
     # - run: cargo check -Z build-std --target aarch64-unknown-linux-gnu_ilp32 --all-targets --features=all-apis
     - run: cargo check -Z build-std --target x86_64-unknown-haiku --all-targets --features=all-apis
     # Temporarily disable due to build errors on nightly.
-    # - run: cargo check -Z build-std --target x86_64-uwp-windows-msvc --all-targets --features=all-apis
     # Temporarily disable due to build errors on nightly.
     # - run: cargo check -Z build-std --target=riscv32imc-esp-espidf --features=all-apis
     - run: cargo check -Z build-std --target=aarch64-unknown-nto-qnx710 --features=all-apis
@@ -308,7 +304,6 @@ jobs:
             macos-latest,
             macos-15-intel,
             macos-14,
-            windows,
             musl,
           ]
         include:
@@ -516,9 +511,6 @@ jobs:
           - build: macos-14
             os: macos-14
             rust: stable
-          - build: windows
-            os: windows-latest
-            rust: nightly
           - build: musl
             os: ubuntu-latest
             rust: stable
@@ -605,7 +597,6 @@ jobs:
         cargo update --package=lock_api --precise=0.4.13
         cargo update --package=rayon --precise=1.10.0
         cargo update --package=rayon-core --precise=1.12.1
-        cargo update --package=windows-sys --precise=0.60.2
         cargo update --package=quote --precise=1.0.41
         cargo update --package=itoa --precise=1.0.15
         cargo update --package=serde_json --precise=1.0.145

@@ -2,23 +2,23 @@
 //! and error streams provided to it.
 
 #[cfg(feature = "termios")]
-#[cfg(all(not(windows), feature = "stdio"))]
+#[cfg(feature = "stdio")]
 use rustix::termios::isatty;
 #[cfg(all(
-    not(any(windows, target_os = "fuchsia")),
+    not(any(target_os = "fuchsia")),
     feature = "fs",
     feature = "termios",
     feature = "alloc"
 ))]
 use rustix::termios::ttyname;
-#[cfg(all(not(windows), feature = "stdio"))]
+#[cfg(feature = "stdio")]
 use {
     rustix::fd::AsFd,
     rustix::io,
     rustix::stdio::{stderr, stdin, stdout},
 };
 
-#[cfg(all(not(windows), feature = "stdio"))]
+#[cfg(feature = "stdio")]
 fn main() -> io::Result<()> {
     let (stdin, stdout, stderr) = (stdin(), stdout(), stderr());
 
@@ -34,7 +34,7 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
-#[cfg(all(not(windows), feature = "stdio"))]
+#[cfg(feature = "stdio")]
 fn show<Fd: AsFd>(fd: Fd) -> io::Result<()> {
     let fd = fd.as_fd();
 
@@ -340,7 +340,7 @@ fn show<Fd: AsFd>(fd: Fd) -> io::Result<()> {
 }
 
 #[cfg(feature = "termios")]
-#[cfg(all(not(target_os = "espidf"), not(windows), feature = "stdio"))]
+#[cfg(all(not(target_os = "espidf"), feature = "stdio"))]
 fn key(b: u8) -> String {
     if b == 0 {
         "<undef>".to_string()
@@ -355,7 +355,7 @@ fn key(b: u8) -> String {
     }
 }
 
-#[cfg(any(windows, not(feature = "stdio")))]
+#[cfg(any(not(feature = "stdio")))]
 fn main() -> Result<(), &'static str> {
-    Err("This example requires --features=stdio and is not supported on Windows.")
+    Err("This example requires --features=stdio.")
 }

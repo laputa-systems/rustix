@@ -4,7 +4,7 @@
 
 #![cfg(not(target_os = "wasi"))]
 
-#[cfg(not(any(windows, target_os = "espidf", target_os = "redox", target_os = "wasi")))]
+#[cfg(not(any(target_os = "espidf", target_os = "redox", target_os = "wasi")))]
 use rustix::net::ReturnFlags;
 use rustix::net::{
     accept, bind, connect, getsockname, listen, recv, send, socket, AddressFamily, Ipv6Addr,
@@ -67,7 +67,6 @@ fn client(ready: Arc<(Mutex<u16>, Condvar)>) {
 
 #[test]
 fn test_v6() {
-    crate::init();
 
     let ready = Arc::new((Mutex::new(0_u16), Condvar::new()));
     let ready_clone = Arc::clone(&ready);
@@ -88,10 +87,9 @@ fn test_v6() {
     server.join().unwrap();
 }
 
-#[cfg(not(any(windows, target_os = "espidf", target_os = "redox", target_os = "wasi")))]
+#[cfg(not(any(target_os = "espidf", target_os = "redox", target_os = "wasi")))]
 #[test]
 fn test_v6_msg() {
-    crate::init();
 
     use rustix::io::{IoSlice, IoSliceMut};
     use rustix::net::{recvmsg, sendmsg};
@@ -199,7 +197,6 @@ fn test_v6_msg() {
 #[test]
 #[cfg(target_os = "linux")]
 fn test_v6_sendmmsg() {
-    crate::init();
 
     use std::net::TcpStream;
 
@@ -290,7 +287,6 @@ fn test_v6_sendmmsg() {
 #[test]
 #[cfg(all(target_os = "linux", feature = "time"))]
 fn test_v6_txtime() {
-    crate::init();
 
     use std::mem::MaybeUninit;
     use std::time;

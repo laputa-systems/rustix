@@ -22,17 +22,17 @@ use backend::fd::AsFd;
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?query=tty&sektion=4
 /// [NetBSD]: https://man.netbsd.org/tty.4
 /// [OpenBSD]: https://man.openbsd.org/tty.4
-#[cfg(not(any(windows, target_os = "aix", target_os = "redox", target_os = "wasi")))]
+#[cfg(not(any(target_os = "aix", target_os = "redox", target_os = "wasi")))]
 #[inline]
 #[doc(alias = "TIOCSCTTY")]
 pub fn ioctl_tiocsctty<Fd: AsFd>(fd: Fd) -> io::Result<()> {
     unsafe { ioctl::ioctl(fd, Tiocsctty) }
 }
 
-#[cfg(not(any(windows, target_os = "aix", target_os = "redox", target_os = "wasi")))]
+#[cfg(not(any(target_os = "aix", target_os = "redox", target_os = "wasi")))]
 struct Tiocsctty;
 
-#[cfg(not(any(windows, target_os = "aix", target_os = "redox", target_os = "wasi")))]
+#[cfg(not(any(target_os = "aix", target_os = "redox", target_os = "wasi")))]
 unsafe impl ioctl::Ioctl for Tiocsctty {
     type Output = ();
 
@@ -55,7 +55,7 @@ unsafe impl ioctl::Ioctl for Tiocsctty {
 }
 
 #[test]
-#[cfg(not(any(windows, target_os = "aix", target_os = "redox", target_os = "wasi")))]
+#[cfg(not(any(target_os = "aix", target_os = "redox", target_os = "wasi")))]
 fn tiocsctty_argument_is_zero() {
     use crate::ioctl::Ioctl;
 

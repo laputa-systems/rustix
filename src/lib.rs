@@ -1,6 +1,6 @@
 //! `rustix` provides efficient memory-safe and [I/O-safe] wrappers to
-//! POSIX-like, Unix-like, Linux, and Winsock syscall-like APIs, with
-//! configurable backends.
+//! POSIX-like, Unix-like, and Linux syscall-like APIs, with configurable
+//! backends.
 //!
 //! With rustix, you can write code like this:
 //!
@@ -23,16 +23,9 @@
 //! # use std::os::unix::io::AsRawFd;
 //! # #[cfg(target_os = "wasi")]
 //! # use std::os::wasi::io::AsRawFd;
-//! # #[cfg(windows)]
-//! # use windows_sys::Win32::Networking::WinSock as libc;
-//! # #[cfg(windows)]
-//! # use std::os::windows::io::AsRawSocket;
 //! # const MSG_PEEK: i32 = libc::MSG_PEEK;
 //! let nread = unsafe {
-//!     #[cfg(any(unix, target_os = "wasi"))]
 //!     let raw = sock.as_raw_fd();
-//!     #[cfg(windows)]
-//!     let raw = sock.as_raw_socket();
 //!     match libc::recv(
 //!         raw as _,
 //!         buf.as_mut_ptr().cast(),
@@ -157,11 +150,13 @@
 #[cfg(all(feature = "alloc", feature = "rustc-dep-of-std"))]
 extern crate rustc_std_workspace_alloc as alloc;
 
+#[cfg(windows)]
+compile_error!("this fork of rustix does not support Windows");
+
 #[cfg(all(feature = "alloc", not(feature = "rustc-dep-of-std")))]
 extern crate alloc;
 
 pub mod buffer;
-#[cfg(not(windows))]
 #[macro_use]
 pub(crate) mod cstr;
 #[macro_use]
@@ -187,7 +182,7 @@ mod types;
 // versions of libc and not others.
 #[cfg(any(
     all(linux_raw, feature = "use-libc-auxv"),
-    all(libc, not(any(windows, target_os = "espidf", target_os = "wasi")))
+    all(libc, not(any(target_os = "espidf", target_os = "wasi")))
 ))]
 #[macro_use]
 mod weak;
@@ -199,17 +194,8 @@ mod backend;
 
 /// Export the `*Fd` types and traits that are used in rustix's public API.
 ///
-/// This module exports the types and traits from [`std::os::fd`], or polyills
-/// on Rust < 1.66 or on Windows.
-///
-/// On Windows, the polyfill consists of aliases of the socket types and
-/// traits, For example, [`OwnedSocket`] is aliased to `OwnedFd`, and so on,
-/// and there are blanket impls for `AsFd` etc. that map to `AsSocket` impls.
-/// These blanket impls suffice for using the traits, however not for
-/// implementing them, so this module also exports `AsSocket` and the other
-/// traits as-is so that users can implement them if needed.
-///
-/// [`OwnedSocket`]: https://doc.rust-lang.org/stable/std/os/windows/io/struct.OwnedSocket.html
+/// This module exports the types and traits from [`std::os::fd`], or polyfills
+/// on Rust < 1.66.
 pub mod fd {
     pub use super::backend::fd::*;
 }
@@ -219,7 +205,6 @@ pub mod fd {
 #[cfg_attr(docsrs, doc(cfg(feature = "event")))]
 pub mod event;
 pub mod ffi;
-#[cfg(not(windows))]
 #[cfg(feature = "fs")]
 #[cfg_attr(docsrs, doc(cfg(feature = "fs")))]
 pub mod fs;
@@ -230,7 +215,6 @@ pub mod io;
 pub mod io_uring;
 pub mod ioctl;
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita",
@@ -247,11 +231,10 @@ pub mod mount;
 #[cfg(feature = "net")]
 #[cfg_attr(docsrs, doc(cfg(feature = "net")))]
 pub mod net;
-#[cfg(not(any(windows, target_os = "espidf")))]
+#[cfg(not(any(target_os = "espidf")))]
 #[cfg(feature = "param")]
 #[cfg_attr(docsrs, doc(cfg(feature = "param")))]
 pub mod param;
-#[cfg(not(windows))]
 #[cfg(any(feature = "fs", feature = "mount", feature = "net"))]
 #[cfg_attr(
     docsrs,
@@ -260,23 +243,19 @@ pub mod param;
 pub mod path;
 #[cfg(feature = "pipe")]
 #[cfg_attr(docsrs, doc(cfg(feature = "pipe")))]
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 pub mod pipe;
-#[cfg(not(windows))]
 #[cfg(feature = "process")]
 #[cfg_attr(docsrs, doc(cfg(feature = "process")))]
 pub mod process;
-#[cfg(not(windows))]
 #[cfg(not(target_os = "wasi"))]
 #[cfg(feature = "pty")]
 #[cfg_attr(docsrs, doc(cfg(feature = "pty")))]
 pub mod pty;
-#[cfg(not(windows))]
 #[cfg(feature = "rand")]
 #[cfg_attr(docsrs, doc(cfg(feature = "rand")))]
 pub mod rand;
 #[cfg(not(any(
-    windows,
     target_os = "android",
     target_os = "espidf",
     target_os = "horizon",
@@ -286,23 +265,21 @@ pub mod rand;
 #[cfg(feature = "shm")]
 #[cfg_attr(docsrs, doc(cfg(feature = "shm")))]
 pub mod shm;
-#[cfg(not(windows))]
 #[cfg(feature = "stdio")]
 #[cfg_attr(docsrs, doc(cfg(feature = "stdio")))]
 pub mod stdio;
 #[cfg(feature = "system")]
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[cfg_attr(docsrs, doc(cfg(feature = "system")))]
 pub mod system;
-#[cfg(not(any(windows, target_os = "horizon", target_os = "vita")))]
+#[cfg(not(any(target_os = "horizon", target_os = "vita")))]
 #[cfg(feature = "termios")]
 #[cfg_attr(docsrs, doc(cfg(feature = "termios")))]
 pub mod termios;
-#[cfg(not(windows))]
 #[cfg(feature = "thread")]
 #[cfg_attr(docsrs, doc(cfg(feature = "thread")))]
 pub mod thread;
-#[cfg(not(any(windows, target_os = "espidf")))]
+#[cfg(not(any(target_os = "espidf")))]
 #[cfg(feature = "time")]
 #[cfg_attr(docsrs, doc(cfg(feature = "time")))]
 pub mod time;
@@ -311,13 +288,11 @@ pub mod time;
 //
 // People have been observed using it in the wild, so as a counter-measure,
 // it now has a name mangled with a random string that will rotate periodically.
-#[cfg(not(windows))]
 #[cfg(feature = "runtime")]
 #[cfg(linux_raw)]
 #[cfg_attr(not(document_experimental_runtime_api), doc(hidden))]
 #[cfg_attr(docsrs, doc(cfg(feature = "runtime")))]
 pub mod runtime_448b8ad740e2a26f;
-#[cfg(not(windows))]
 #[cfg(feature = "runtime")]
 #[cfg(linux_raw)]
 #[cfg_attr(not(document_experimental_runtime_api), doc(hidden))]
@@ -326,7 +301,6 @@ pub(crate) use runtime_448b8ad740e2a26f as runtime;
 
 // Declare "fs" as a non-public module if "fs" isn't enabled but we need it for
 // reading procfs.
-#[cfg(not(windows))]
 #[cfg(not(feature = "fs"))]
 #[cfg(all(
     linux_raw,
@@ -344,7 +318,6 @@ pub(crate) use runtime_448b8ad740e2a26f as runtime;
 pub(crate) mod fs;
 
 // Similarly, declare `path` as a non-public module if needed.
-#[cfg(not(windows))]
 #[cfg(not(any(feature = "fs", feature = "mount", feature = "net")))]
 #[cfg(all(
     linux_raw,
@@ -361,13 +334,13 @@ pub(crate) mod fs;
 pub(crate) mod path;
 
 // Private modules used by multiple public modules.
-#[cfg(not(any(windows, target_os = "espidf")))]
+#[cfg(not(any(target_os = "espidf")))]
 #[cfg(any(feature = "thread", feature = "time"))]
 mod clockid;
 #[cfg(linux_kernel)]
 #[cfg(any(feature = "io_uring", feature = "runtime"))]
 mod kernel_sigset;
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[cfg(any(
     feature = "process",
     feature = "runtime",
@@ -380,7 +353,7 @@ mod pid;
 #[cfg(any(feature = "process", feature = "thread"))]
 #[cfg(linux_kernel)]
 mod prctl;
-#[cfg(not(any(windows, target_os = "espidf", target_os = "wasi")))]
+#[cfg(not(any(target_os = "espidf", target_os = "wasi")))]
 #[cfg(any(
     feature = "io_uring",
     feature = "process",
@@ -396,7 +369,7 @@ mod signal;
     feature = "runtime",
     feature = "thread",
     feature = "time",
-    all(feature = "event", any(bsd, linux_kernel, windows, target_os = "wasi")),
+    all(feature = "event", any(bsd, linux_kernel, target_os = "wasi")),
     all(
         linux_raw,
         not(feature = "use-libc-auxv"),
@@ -411,7 +384,7 @@ mod signal;
     )
 ))]
 mod timespec;
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[cfg(any(
     feature = "fs",
     feature = "process",

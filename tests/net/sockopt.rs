@@ -36,7 +36,6 @@ fn test_sockopts_socket(s: &OwnedFd) {
         assert_eq!(sockopt::socket_protocol(s).unwrap(), Some(ipproto::TCP));
     }
     assert!(!sockopt::socket_reuseaddr(s).unwrap());
-    #[cfg(not(windows))]
     assert!(!sockopt::socket_broadcast(s).unwrap());
     // On a new socket we shouldn't have a linger yet.
     assert!(sockopt::socket_linger(s).unwrap().is_none());
@@ -94,7 +93,6 @@ fn test_sockopts_socket(s: &OwnedFd) {
     // Check that the reuse address flag is set.
     assert!(sockopt::socket_reuseaddr(s).unwrap());
 
-    #[cfg(not(windows))]
     {
         // Set the broadcast flag;
         sockopt::set_socket_broadcast(s, true).unwrap();
@@ -141,7 +139,7 @@ fn test_sockopts_socket(s: &OwnedFd) {
     assert!(sockopt::socket_oobinline(s).unwrap());
 
     // Check the initial value of `SO_REUSEPORT`, set it, and check it.
-    #[cfg(not(any(solarish, windows, target_os = "cygwin")))]
+    #[cfg(not(any(solarish, target_os = "cygwin")))]
     {
         assert!(!sockopt::socket_reuseport(s).unwrap());
         sockopt::set_socket_reuseport(s, true).unwrap();
@@ -298,7 +296,6 @@ fn test_sockopts_tcp(s: &OwnedFd) {
 
 #[test]
 fn test_sockopts_ipv4() {
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET, SocketType::STREAM, None).unwrap();
 
@@ -306,7 +303,6 @@ fn test_sockopts_ipv4() {
 
     #[cfg(not(any(
         apple,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "dragonfly",
@@ -319,9 +315,9 @@ fn test_sockopts_ipv4() {
     assert_eq!(sockopt::socket_domain(&s).unwrap(), AddressFamily::INET);
     assert_ne!(sockopt::ip_ttl(&s).unwrap(), 0);
     assert_ne!(sockopt::ip_ttl(&s).unwrap(), 77);
-    #[cfg(not(any(bsd, windows, solarish)))]
+    #[cfg(not(any(bsd, solarish)))]
     assert!(sockopt::ip_multicast_loop(&s).unwrap());
-    #[cfg(not(any(bsd, windows, solarish)))]
+    #[cfg(not(any(bsd, solarish)))]
     assert_eq!(sockopt::ip_multicast_ttl(&s).unwrap(), 1);
 
     // Set the ip ttl.
@@ -330,7 +326,7 @@ fn test_sockopts_ipv4() {
     // Check the ip ttl.
     assert_eq!(sockopt::ip_ttl(&s).unwrap(), 77);
 
-    #[cfg(not(any(bsd, windows, solarish)))]
+    #[cfg(not(any(bsd, solarish)))]
     {
         // Set the multicast loop flag;
         sockopt::set_ip_multicast_loop(&s, false).unwrap();
@@ -395,7 +391,6 @@ fn test_sockopts_ipv4() {
 
 #[test]
 fn test_sockopts_ipv6() {
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET6, SocketType::STREAM, None).unwrap();
     let ds = rustix::net::socket(AddressFamily::INET6, SocketType::DGRAM, None).unwrap();
@@ -404,7 +399,6 @@ fn test_sockopts_ipv6() {
 
     #[cfg(not(any(
         apple,
-        windows,
         target_os = "cygwin",
         target_os = "dragonfly",
         target_os = "emscripten",
@@ -512,7 +506,6 @@ fn test_sockopts_ipv6() {
     // Check the initial value of `IPV6_TCLASS`, set it, and check it.
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "redox"
@@ -538,7 +531,6 @@ fn test_sockopts_ipv6() {
 #[cfg(linux_kernel)]
 #[test]
 fn test_socket_passcred() {
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::UNIX, SocketType::STREAM, None).unwrap();
 
@@ -552,7 +544,6 @@ fn test_socket_passcred() {
 fn test_socketopts_ip_mtu() {
     use std::net::SocketAddrV4;
 
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET, SocketType::DGRAM, None).unwrap();
     rustix::net::bind(&s, &SocketAddrV4::new(Ipv4Addr::LOCALHOST, 0)).unwrap();
@@ -573,7 +564,6 @@ fn test_socketopts_ip_mtu() {
 fn test_socketopts_ipv6_mtu() {
     use std::net::{Ipv6Addr, SocketAddrV6};
 
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET6, SocketType::DGRAM, None).unwrap();
     rustix::net::bind(&s, &SocketAddrV6::new(Ipv6Addr::LOCALHOST, 0, 0, 0)).unwrap();
@@ -593,7 +583,6 @@ fn test_socketopts_ipv6_mtu() {
 #[cfg(linux_kernel)]
 #[test]
 fn test_ip_mtu_discover() {
-    crate::init();
 
     // IPv4
     {
@@ -620,7 +609,6 @@ fn test_ip_mtu_discover() {
 
 #[test]
 fn test_sockopts_multicast_ifv4() {
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET, SocketType::DGRAM, None).unwrap();
 
@@ -639,7 +627,6 @@ fn test_sockopts_multicast_ifv4() {
 #[cfg(linux_kernel)]
 #[test]
 fn test_sockopts_multicast_if_with_ifindex() {
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET, SocketType::DGRAM, None).unwrap();
 
@@ -671,7 +658,6 @@ fn test_sockopts_multicast_if_with_ifindex() {
 
 #[test]
 fn test_sockopts_multicast_ifv6() {
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET6, SocketType::DGRAM, None).unwrap();
 
@@ -690,7 +676,6 @@ fn test_sockopts_multicast_ifv6() {
 #[test]
 #[cfg(all(target_os = "linux", feature = "time"))]
 fn test_sockopts_txtime() {
-    crate::init();
 
     let s = rustix::net::socket(AddressFamily::INET, SocketType::DGRAM, None).unwrap();
 

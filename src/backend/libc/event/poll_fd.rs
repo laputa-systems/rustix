@@ -1,8 +1,6 @@
 use crate::backend::c;
 use crate::backend::conv::borrowed_fd;
 use crate::backend::fd::{AsFd, AsRawFd as _, BorrowedFd, LibcFd};
-#[cfg(windows)]
-use crate::backend::fd::{AsSocket, RawFd};
 use crate::ffi;
 use bitflags::bitflags;
 use core::fmt;
@@ -127,22 +125,11 @@ impl<'fd> PollFd<'fd> {
     }
 }
 
-#[cfg(not(windows))]
 impl<'fd> AsFd for PollFd<'fd> {
     #[inline]
     fn as_fd(&self) -> BorrowedFd<'_> {
         // SAFETY: Our constructors and `set_fd` require `pollfd.fd` to be
         // valid for the `'fd` lifetime.
         unsafe { BorrowedFd::borrow_raw(self.pollfd.fd) }
-    }
-}
-
-#[cfg(windows)]
-impl<'fd> AsSocket for PollFd<'fd> {
-    #[inline]
-    fn as_socket(&self) -> BorrowedFd<'_> {
-        // SAFETY: Our constructors and `set_fd` require `pollfd.fd` to be
-        // valid for the `'fd` lifetime.
-        unsafe { BorrowedFd::borrow_raw(self.pollfd.fd as RawFd) }
     }
 }

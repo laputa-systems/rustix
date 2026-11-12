@@ -14,7 +14,6 @@ use libc_errno::errno;
 /// # References
 ///  - [POSIX]
 ///  - [Linux]
-///  - [Winsock]
 ///  - [FreeBSD]
 ///  - [NetBSD]
 ///  - [OpenBSD]
@@ -24,7 +23,6 @@ use libc_errno::errno;
 ///
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/errno.html
 /// [Linux]: https://man7.org/linux/man-pages/man3/errno.3.html
-/// [Winsock]: https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?errno
 /// [NetBSD]: https://man.netbsd.org/errno.2
 /// [OpenBSD]: https://man.openbsd.org/errno.2
@@ -47,7 +45,6 @@ impl Errno {
     /// `EADV`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -72,7 +69,6 @@ impl Errno {
     /// `EBADE`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -88,7 +84,6 @@ impl Errno {
     /// `EBADFD`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -100,12 +95,11 @@ impl Errno {
     )))]
     pub const BADFD: Self = Self(c::EBADFD);
     /// `EBADMSG`
-    #[cfg(not(any(windows, target_os = "l4re")))]
+    #[cfg(not(any(target_os = "l4re")))]
     pub const BADMSG: Self = Self(c::EBADMSG);
     /// `EBADR`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -122,7 +116,6 @@ impl Errno {
     /// `EBADRQC`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -136,7 +129,6 @@ impl Errno {
     /// `EBADSLT`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -150,7 +142,6 @@ impl Errno {
     /// `EBFONT`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -162,7 +153,6 @@ impl Errno {
     )))]
     pub const BFONT: Self = Self(c::EBFONT);
     /// `EBUSY`
-    #[cfg(not(windows))]
     pub const BUSY: Self = Self(c::EBUSY);
     /// `ECANCELED`
     #[cfg(not(target_os = "l4re"))]
@@ -171,12 +161,10 @@ impl Errno {
     #[cfg(target_os = "freebsd")]
     pub const CAPMODE: Self = Self(c::ECAPMODE);
     /// `ECHILD`
-    #[cfg(not(windows))]
     pub const CHILD: Self = Self(c::ECHILD);
     /// `ECHRNG`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -189,7 +177,6 @@ impl Errno {
     /// `ECOMM`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -207,12 +194,10 @@ impl Errno {
     /// `ECONNRESET`
     pub const CONNRESET: Self = Self(c::ECONNRESET);
     /// `EDEADLK`
-    #[cfg(not(windows))]
     pub const DEADLK: Self = Self(c::EDEADLK);
     /// `EDEADLOCK`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "android",
         target_os = "espidf",
@@ -226,11 +211,7 @@ impl Errno {
     /// `EDESTADDRREQ`
     #[cfg(not(target_os = "l4re"))]
     pub const DESTADDRREQ: Self = Self(c::EDESTADDRREQ);
-    /// `EDISCON`
-    #[cfg(windows)]
-    pub const DISCON: Self = Self(c::EDISCON);
     /// `EDOM`
-    #[cfg(not(windows))]
     pub const DOM: Self = Self(c::EDOM);
     /// `EDOOFUS`
     #[cfg(freebsdlike)]
@@ -239,7 +220,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -254,12 +234,10 @@ impl Errno {
     /// `EDQUOT`
     pub const DQUOT: Self = Self(c::EDQUOT);
     /// `EEXIST`
-    #[cfg(not(windows))]
     pub const EXIST: Self = Self(c::EEXIST);
     /// `EFAULT`
     pub const FAULT: Self = Self(c::EFAULT);
     /// `EFBIG`
-    #[cfg(not(windows))]
     pub const FBIG: Self = Self(c::EFBIG);
     /// `EFTYPE`
     #[cfg(any(bsd, target_env = "newlib"))]
@@ -273,7 +251,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "android",
         target_os = "cygwin",
@@ -289,10 +266,10 @@ impl Errno {
     )))]
     pub const HWPOISON: Self = Self(c::EHWPOISON);
     /// `EIDRM`
-    #[cfg(not(any(windows, target_os = "l4re")))]
+    #[cfg(not(any(target_os = "l4re")))]
     pub const IDRM: Self = Self(c::EIDRM);
     /// `EILSEQ`
-    #[cfg(not(any(windows, target_os = "l4re")))]
+    #[cfg(not(any(target_os = "l4re")))]
     pub const ILSEQ: Self = Self(c::EILSEQ);
     /// `EINPROGRESS`
     #[cfg(not(target_os = "l4re"))]
@@ -306,26 +283,17 @@ impl Errno {
     pub const INTR: Self = Self(c::EINTR);
     /// `EINVAL`
     pub const INVAL: Self = Self(c::EINVAL);
-    /// `EINVALIDPROCTABLE`
-    #[cfg(windows)]
-    pub const INVALIDPROCTABLE: Self = Self(c::EINVALIDPROCTABLE);
-    /// `EINVALIDPROVIDER`
-    #[cfg(windows)]
-    pub const INVALIDPROVIDER: Self = Self(c::EINVALIDPROVIDER);
     /// `EIO`
-    #[cfg(not(windows))]
     pub const IO: Self = Self(c::EIO);
     /// `EISCONN`
     #[cfg(not(target_os = "l4re"))]
     pub const ISCONN: Self = Self(c::EISCONN);
     /// `EISDIR`
-    #[cfg(not(windows))]
     pub const ISDIR: Self = Self(c::EISDIR);
     /// `EISNAM`
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -342,7 +310,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -359,7 +326,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -376,7 +342,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -392,7 +357,6 @@ impl Errno {
     /// `EL2HLT`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -405,7 +369,6 @@ impl Errno {
     /// `EL2NSYNC`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -418,7 +381,6 @@ impl Errno {
     /// `EL3HLT`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -431,7 +393,6 @@ impl Errno {
     /// `EL3RST`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -444,7 +405,6 @@ impl Errno {
     /// `ELIBACC`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -458,7 +418,6 @@ impl Errno {
     /// `ELIBBAD`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -472,7 +431,6 @@ impl Errno {
     /// `ELIBEXEC`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -485,7 +443,6 @@ impl Errno {
     /// `ELIBMAX`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -499,7 +456,6 @@ impl Errno {
     /// `ELIBSCN`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -513,7 +469,6 @@ impl Errno {
     /// `ELNRNG`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -529,7 +484,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -545,13 +499,12 @@ impl Errno {
     /// `EMFILE`
     pub const MFILE: Self = Self(c::EMFILE);
     /// `EMLINK`
-    #[cfg(not(windows))]
     pub const MLINK: Self = Self(c::EMLINK);
     /// `EMSGSIZE`
     #[cfg(not(target_os = "l4re"))]
     pub const MSGSIZE: Self = Self(c::EMSGSIZE);
     /// `EMULTIHOP`
-    #[cfg(not(any(windows, target_os = "l4re", target_os = "openbsd")))]
+    #[cfg(not(any(target_os = "l4re", target_os = "openbsd")))]
     pub const MULTIHOP: Self = Self(c::EMULTIHOP);
     /// `ENAMETOOLONG`
     pub const NAMETOOLONG: Self = Self(c::ENAMETOOLONG);
@@ -559,7 +512,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -583,12 +535,10 @@ impl Errno {
     /// `ENETUNREACH`
     pub const NETUNREACH: Self = Self(c::ENETUNREACH);
     /// `ENFILE`
-    #[cfg(not(windows))]
     pub const NFILE: Self = Self(c::ENFILE);
     /// `ENOANO`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -608,7 +558,6 @@ impl Errno {
     /// `ENOCSI`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -621,26 +570,21 @@ impl Errno {
     /// `ENODATA`
     #[cfg(not(any(
         freebsdlike,
-        windows,
         target_os = "haiku",
         target_os = "openbsd",
         target_os = "wasi",
     )))]
     pub const NODATA: Self = Self(c::ENODATA);
     /// `ENODEV`
-    #[cfg(not(windows))]
     pub const NODEV: Self = Self(c::ENODEV);
     /// `ENOENT`
-    #[cfg(not(windows))]
     pub const NOENT: Self = Self(c::ENOENT);
     /// `ENOEXEC`
-    #[cfg(not(windows))]
     pub const NOEXEC: Self = Self(c::ENOEXEC);
     /// `ENOKEY`
     #[cfg(not(any(
         solarish,
         bsd,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -654,16 +598,15 @@ impl Errno {
     )))]
     pub const NOKEY: Self = Self(c::ENOKEY);
     /// `ENOLCK`
-    #[cfg(not(any(windows, target_os = "l4re")))]
+    #[cfg(not(any(target_os = "l4re")))]
     pub const NOLCK: Self = Self(c::ENOLCK);
     /// `ENOLINK`
-    #[cfg(not(any(windows, target_os = "l4re", target_os = "openbsd")))]
+    #[cfg(not(any(target_os = "l4re", target_os = "openbsd")))]
     pub const NOLINK: Self = Self(c::ENOLINK);
     /// `ENOMEDIUM`
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -676,18 +619,13 @@ impl Errno {
     )))]
     pub const NOMEDIUM: Self = Self(c::ENOMEDIUM);
     /// `ENOMEM`
-    #[cfg(not(windows))]
     pub const NOMEM: Self = Self(c::ENOMEM);
-    /// `ENOMORE`
-    #[cfg(windows)]
-    pub const NOMORE: Self = Self(c::ENOMORE);
     /// `ENOMSG`
-    #[cfg(not(any(windows, target_os = "l4re")))]
+    #[cfg(not(any(target_os = "l4re")))]
     pub const NOMSG: Self = Self(c::ENOMSG);
     /// `ENONET`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -701,7 +639,6 @@ impl Errno {
     /// `ENOPKG`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -716,12 +653,10 @@ impl Errno {
     #[cfg(not(target_os = "l4re"))]
     pub const NOPROTOOPT: Self = Self(c::ENOPROTOOPT);
     /// `ENOSPC`
-    #[cfg(not(windows))]
     pub const NOSPC: Self = Self(c::ENOSPC);
     /// `ENOSR`
     #[cfg(not(any(
         freebsdlike,
-        windows,
         target_os = "haiku",
         target_os = "l4re",
         target_os = "openbsd",
@@ -731,7 +666,6 @@ impl Errno {
     /// `ENOSTR`
     #[cfg(not(any(
         freebsdlike,
-        windows,
         target_os = "haiku",
         target_os = "l4re",
         target_os = "openbsd",
@@ -739,11 +673,9 @@ impl Errno {
     )))]
     pub const NOSTR: Self = Self(c::ENOSTR);
     /// `ENOSYS`
-    #[cfg(not(windows))]
     pub const NOSYS: Self = Self(c::ENOSYS);
     /// `ENOTBLK`
     #[cfg(not(any(
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -757,7 +689,6 @@ impl Errno {
     /// `ENOTCONN`
     pub const NOTCONN: Self = Self(c::ENOTCONN);
     /// `ENOTDIR`
-    #[cfg(not(windows))]
     pub const NOTDIR: Self = Self(c::ENOTDIR);
     /// `ENOTEMPTY`
     pub const NOTEMPTY: Self = Self(c::ENOTEMPTY);
@@ -765,7 +696,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -782,7 +712,6 @@ impl Errno {
     #[cfg(not(any(
         freebsdlike,
         netbsdlike,
-        windows,
         target_os = "haiku",
         target_os = "l4re"
     )))]
@@ -791,15 +720,13 @@ impl Errno {
     #[cfg(not(target_os = "l4re"))]
     pub const NOTSOCK: Self = Self(c::ENOTSOCK);
     /// `ENOTSUP`
-    #[cfg(not(any(windows, target_os = "redox")))]
+    #[cfg(not(any(target_os = "redox")))]
     pub const NOTSUP: Self = Self(c::ENOTSUP);
     /// `ENOTTY`
-    #[cfg(not(windows))]
     pub const NOTTY: Self = Self(c::ENOTTY);
     /// `ENOTUNIQ`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -811,30 +738,26 @@ impl Errno {
     )))]
     pub const NOTUNIQ: Self = Self(c::ENOTUNIQ);
     /// `ENXIO`
-    #[cfg(not(windows))]
     pub const NXIO: Self = Self(c::ENXIO);
     /// `EOPNOTSUPP`
     pub const OPNOTSUPP: Self = Self(c::EOPNOTSUPP);
     /// `EOVERFLOW`
-    #[cfg(not(any(windows, target_os = "l4re")))]
+    #[cfg(not(any(target_os = "l4re")))]
     pub const OVERFLOW: Self = Self(c::EOVERFLOW);
     /// `EOWNERDEAD`
     #[cfg(not(any(
         freebsdlike,
         netbsdlike,
-        windows,
         target_os = "haiku",
         target_os = "l4re"
     )))]
     pub const OWNERDEAD: Self = Self(c::EOWNERDEAD);
     /// `EPERM`
-    #[cfg(not(windows))]
     pub const PERM: Self = Self(c::EPERM);
     /// `EPFNOSUPPORT`
     #[cfg(not(any(target_os = "l4re", target_os = "wasi")))]
     pub const PFNOSUPPORT: Self = Self(c::EPFNOSUPPORT);
     /// `EPIPE`
-    #[cfg(not(windows))]
     pub const PIPE: Self = Self(c::EPIPE);
     /// `EPROCLIM`
     #[cfg(bsd)]
@@ -849,7 +772,7 @@ impl Errno {
     #[cfg(bsd)]
     pub const PROGUNAVAIL: Self = Self(c::EPROGUNAVAIL);
     /// `EPROTO`
-    #[cfg(not(any(windows, target_os = "l4re")))]
+    #[cfg(not(any(target_os = "l4re")))]
     pub const PROTO: Self = Self(c::EPROTO);
     /// `EPROTONOSUPPORT`
     #[cfg(not(target_os = "l4re"))]
@@ -857,19 +780,11 @@ impl Errno {
     /// `EPROTOTYPE`
     #[cfg(not(target_os = "l4re"))]
     pub const PROTOTYPE: Self = Self(c::EPROTOTYPE);
-    /// `EPROVIDERFAILEDINIT`
-    #[cfg(windows)]
-    pub const PROVIDERFAILEDINIT: Self = Self(c::EPROVIDERFAILEDINIT);
     /// `ERANGE`
-    #[cfg(not(windows))]
     pub const RANGE: Self = Self(c::ERANGE);
-    /// `EREFUSED`
-    #[cfg(windows)]
-    pub const REFUSED: Self = Self(c::EREFUSED);
     /// `EREMCHG`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -894,7 +809,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -910,7 +824,6 @@ impl Errno {
     /// `ERESTART`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "cygwin",
         target_os = "espidf",
         target_os = "haiku",
@@ -925,7 +838,6 @@ impl Errno {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "android",
         target_os = "cygwin",
@@ -941,7 +853,6 @@ impl Errno {
     )))]
     pub const RFKILL: Self = Self(c::ERFKILL);
     /// `EROFS`
-    #[cfg(not(windows))]
     pub const ROFS: Self = Self(c::EROFS);
     /// `ERPCMISMATCH`
     #[cfg(bsd)]
@@ -966,15 +877,12 @@ impl Errno {
     )))]
     pub const SOCKTNOSUPPORT: Self = Self(c::ESOCKTNOSUPPORT);
     /// `ESPIPE`
-    #[cfg(not(windows))]
     pub const SPIPE: Self = Self(c::ESPIPE);
     /// `ESRCH`
-    #[cfg(not(windows))]
     pub const SRCH: Self = Self(c::ESRCH);
     /// `ESRMNT`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -990,7 +898,6 @@ impl Errno {
     /// `ESTRPIPE`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",
@@ -1004,7 +911,6 @@ impl Errno {
     /// `ETIME`
     #[cfg(not(any(
         freebsdlike,
-        windows,
         target_os = "l4re",
         target_os = "openbsd",
         target_os = "wasi"
@@ -1013,20 +919,17 @@ impl Errno {
     /// `ETIMEDOUT`
     pub const TIMEDOUT: Self = Self(c::ETIMEDOUT);
     /// `E2BIG`
-    #[cfg(not(windows))]
     #[doc(alias = "2BIG")]
     pub const TOOBIG: Self = Self(c::E2BIG);
     /// `ETOOMANYREFS`
     #[cfg(not(any(target_os = "haiku", target_os = "l4re", target_os = "wasi")))]
     pub const TOOMANYREFS: Self = Self(c::ETOOMANYREFS);
     /// `ETXTBSY`
-    #[cfg(not(windows))]
     pub const TXTBSY: Self = Self(c::ETXTBSY);
     /// `EUCLEAN`
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -1042,7 +945,6 @@ impl Errno {
     /// `EUNATCH`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -1065,12 +967,10 @@ impl Errno {
     /// `EWOULDBLOCK`
     pub const WOULDBLOCK: Self = Self(c::EWOULDBLOCK);
     /// `EXDEV`
-    #[cfg(not(windows))]
     pub const XDEV: Self = Self(c::EXDEV);
     /// `EXFULL`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "espidf",
         target_os = "haiku",

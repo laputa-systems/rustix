@@ -4,7 +4,6 @@ use rustix::event::{
 };
 use rustix::fd::{AsRawFd as _, RawFd};
 #[cfg(feature = "pipe")]
-#[cfg(not(windows))]
 #[allow(unused_imports)]
 use rustix::fd::{FromRawFd as _, OwnedFd};
 use rustix::io::retry_on_intr;
@@ -12,7 +11,6 @@ use serial_test::serial;
 use std::cmp::max;
 
 #[cfg(feature = "pipe")]
-#[cfg(not(windows))]
 #[test]
 fn test_select_with_pipes() {
     use rustix::io::{read, write};
@@ -84,7 +82,6 @@ fn test_select_with_pipes() {
 
 #[cfg(feature = "pipe")]
 #[cfg(feature = "process")]
-#[cfg(not(windows))]
 #[test]
 #[serial] // for `setrlimit` usage
 fn test_select_with_great_fds() {
@@ -179,16 +176,12 @@ fn test_select_with_great_fds() {
 
 #[cfg(feature = "net")]
 #[test]
-#[serial] // for `crate::init`
-fn test_select_with_sockets() {
+#[serial] fn test_select_with_sockets() {
     use rustix::net::{recv, send, AddressFamily, RecvFlags, SendFlags, SocketType};
     use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-    crate::init();
 
-    // Create a socket pair (but don't use `socketpair` because we want this to
-    // work on Windows too).
-
+    // Create a socket pair (but don't use `socketpair`).
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
     let listener = rustix::net::socket(AddressFamily::INET, SocketType::STREAM, None).unwrap();
@@ -200,9 +193,6 @@ fn test_select_with_sockets() {
     let reader = rustix::net::accept(&listener).expect("accept");
 
     let nfds = max(reader.as_raw_fd(), writer.as_raw_fd()) + 1;
-
-    #[cfg(windows)]
-    let nfds: i32 = nfds.try_into().unwrap();
 
     // `select` should say there's nothing ready to be read from the pipe.
     let mut readfds = vec![FdSetElement::default(); fd_set_num_elements(2, nfds as RawFd)];
@@ -274,7 +264,6 @@ fn test_select_with_sockets() {
 // value.
 #[cfg(feature = "net")]
 #[cfg(feature = "process")]
-#[cfg(not(windows))] // for `dup2` usage
 #[test]
 #[serial] // for `setrlimit` usage, and `crate::init`
 fn test_select_with_maxfd_sockets() {
@@ -282,7 +271,6 @@ fn test_select_with_maxfd_sockets() {
     use rustix::process::{getrlimit, setrlimit, Resource};
     use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -319,9 +307,6 @@ fn test_select_with_maxfd_sockets() {
     let writer = unsafe { OwnedFd::from_raw_fd(great_fd) };
 
     let nfds = max(reader.as_raw_fd(), writer.as_raw_fd()) + 1;
-
-    #[cfg(windows)]
-    let nfds: i32 = nfds.try_into().unwrap();
 
     // `select` should say there's nothing ready to be read from the pipe.
     let mut readfds = vec![FdSetElement::default(); fd_set_num_elements(2, nfds as RawFd)];
@@ -431,7 +416,6 @@ fn fd_set_contains(fds: &[FdSetElement], fd: RawFd) -> bool {
 }
 
 #[cfg(feature = "pipe")]
-#[cfg(not(windows))]
 #[test]
 fn test_select_near_second_boundary_timeout() {
     use rustix::pipe::pipe;
@@ -461,7 +445,6 @@ fn test_select_near_second_boundary_timeout() {
 }
 
 #[cfg(feature = "pipe")]
-#[cfg(not(windows))]
 #[test]
 fn test_select_repro_nanos_boundary() {
     use rustix::pipe::pipe;

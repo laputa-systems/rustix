@@ -1,5 +1,4 @@
-// `ioctl_fionread` on Windows doesn't work on files.
-#[cfg(not(any(windows, target_os = "cygwin", target_os = "haiku")))]
+#[cfg(not(any(target_os = "cygwin", target_os = "haiku")))]
 #[test]
 fn test_ioctls() {
     let file = std::fs::File::open("Cargo.toml").unwrap();

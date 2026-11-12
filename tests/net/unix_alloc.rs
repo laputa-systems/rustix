@@ -94,7 +94,6 @@ fn client(ready: Arc<(Mutex<bool>, Condvar)>, path: &Path, runs: &[(&[&str], i32
 #[test]
 #[cfg(not(target_os = "freebsd"))] // TODO: Investigate why these tests fail on FreeBSD.
 fn test_unix() {
-    crate::init();
 
     let ready = Arc::new((Mutex::new(false), Condvar::new()));
     let ready_clone = Arc::clone(&ready);
@@ -370,7 +369,6 @@ fn test_unix_msg() {
     use rustix::ffi::CString;
     use std::os::unix::ffi::OsStrExt as _;
 
-    crate::init();
 
     let tmpdir = tempfile::tempdir().unwrap();
     let path = tmpdir.path().join("scp_4804");
@@ -395,7 +393,6 @@ fn test_unix_msg_unconnected() {
     use rustix::ffi::CString;
     use std::os::unix::ffi::OsStrExt as _;
 
-    crate::init();
 
     let tmpdir = tempfile::tempdir().unwrap();
     let path = tmpdir.path().join("scp_4804");
@@ -416,7 +413,6 @@ fn test_unix_msg_unconnected() {
 #[cfg(linux_kernel)]
 #[test]
 fn test_abstract_unix_msg() {
-    crate::init();
 
     use std::os::unix::ffi::OsStrExt as _;
 
@@ -433,7 +429,6 @@ fn test_abstract_unix_msg() {
 #[cfg(linux_kernel)]
 #[test]
 fn test_abstract_unix_msg_unconnected() {
-    crate::init();
 
     use std::os::unix::ffi::OsStrExt as _;
 
@@ -451,7 +446,6 @@ fn test_abstract_unix_msg_unconnected() {
 #[cfg(not(target_os = "freebsd"))] // TODO: Investigate why these tests fail on FreeBSD.
 #[test]
 fn test_unix_msg_with_scm_rights() {
-    crate::init();
 
     use rustix::fd::AsFd as _;
     use rustix::io::{IoSlice, IoSliceMut};
@@ -629,7 +623,6 @@ fn test_unix_msg_with_scm_rights() {
 #[cfg(all(feature = "process", linux_kernel))]
 #[test]
 fn test_unix_peercred() {
-    crate::init();
 
     use rustix::io::{IoSlice, IoSliceMut};
     use rustix::net::{
@@ -691,7 +684,6 @@ fn test_unix_peercred() {
 #[cfg(not(target_os = "freebsd"))] // TODO: Investigate why these tests fail on FreeBSD.
 #[test]
 fn test_unix_msg_with_combo() {
-    crate::init();
 
     use rustix::fd::AsFd as _;
     use rustix::io::{IoSlice, IoSliceMut};

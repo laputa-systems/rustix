@@ -1,7 +1,7 @@
 //! A command which prints the current values of the realtime and monotonic
 //! clocks it's given.
 
-#[cfg(not(any(windows, target_os = "espidf")))]
+#[cfg(not(any(target_os = "espidf")))]
 #[cfg(feature = "time")]
 fn main() {
     use rustix::time::{clock_gettime, ClockId};
@@ -43,7 +43,7 @@ fn main() {
     );
 }
 
-#[cfg(any(windows, target_os = "espidf", not(feature = "time")))]
+#[cfg(any(target_os = "espidf", not(feature = "time")))]
 fn main() -> Result<(), &'static str> {
-    Err("This example requires --features=time and is not supported on Windows or ESP-IDF.")
+    Err("This example requires --features=time or ESP-IDF.")
 }

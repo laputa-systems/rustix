@@ -6,7 +6,6 @@ use crate::fd::OwnedFd;
 use crate::{backend, io};
 #[cfg(not(any(
     solarish,
-    windows,
     target_os = "espidf",
     target_os = "haiku",
     target_os = "horizon",
@@ -34,7 +33,6 @@ pub use backend::pipe::types::{IoSliceRaw, SpliceFlags};
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/write.html
 #[cfg(not(any(
     solarish,
-    windows,
     target_os = "espidf",
     target_os = "haiku",
     target_os = "horizon",

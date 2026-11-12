@@ -1,7 +1,7 @@
 //! This is an example of how to use `dup2` to replace the stdin and stdout
 //! file descriptors.
 
-#[cfg(all(not(windows), feature = "pipe", feature = "stdio"))]
+#[cfg(all(feature = "pipe", feature = "stdio"))]
 fn main() -> std::io::Result<()> {
     use rustix::pipe::pipe;
     use rustix::stdio::{dup2_stdin, dup2_stdout};
@@ -37,7 +37,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-#[cfg(not(all(not(windows), feature = "pipe", feature = "stdio")))]
+#[cfg(not(all(feature = "pipe", feature = "stdio")))]
 fn main() -> Result<(), &'static str> {
-    Err("This example requires --features=pipe,stdio and is not supported on Windows.")
+    Err("This example requires --features=pipe,stdio.")
 }

@@ -327,7 +327,6 @@ mod tests {
     #[allow(unused_imports)]
     use super::*;
 
-    #[cfg(not(windows))]
     #[test]
     fn test_compilation() {
         use crate::io::read;
@@ -367,7 +366,6 @@ mod tests {
         let _x: (&mut [u8], &mut [MaybeUninit<u8>]) = read(&input, &mut buf[..]).unwrap();
     }
 
-    #[cfg(not(windows))]
     #[test]
     fn test_slice() {
         use crate::io::read;
@@ -392,7 +390,6 @@ mod tests {
         assert_eq!(nread, 0);
     }
 
-    #[cfg(not(windows))]
     #[test]
     fn test_slice_uninit() {
         use crate::io::read;
@@ -425,7 +422,6 @@ mod tests {
         assert_eq!(uninit.len(), buf.len());
     }
 
-    #[cfg(not(windows))]
     #[test]
     fn test_spare_capacity() {
         use crate::io::read;

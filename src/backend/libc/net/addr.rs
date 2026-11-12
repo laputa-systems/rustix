@@ -339,7 +339,6 @@ impl SocketAddrStorage {
 }
 
 /// Return the offset of the `sun_path` field of `sockaddr_un`.
-#[cfg(not(windows))]
 #[inline]
 pub(crate) fn offsetof_sun_path() -> usize {
     let z = c::sockaddr_un {

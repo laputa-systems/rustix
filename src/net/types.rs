@@ -93,7 +93,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -112,7 +111,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -146,7 +144,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -162,7 +159,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -178,7 +174,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -193,7 +188,6 @@ impl AddressFamily {
     /// `AF_X25`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -209,7 +203,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -234,7 +227,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -250,7 +242,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -265,7 +256,6 @@ impl AddressFamily {
     /// `AF_KEY`
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -285,7 +275,6 @@ impl AddressFamily {
     /// [Linux]: https://man7.org/linux/man-pages/man7/packet.7.html
     #[cfg(not(any(
         bsd,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -301,7 +290,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -317,7 +305,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -333,7 +320,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -349,7 +335,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -389,7 +374,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -405,7 +389,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -421,7 +404,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -437,7 +419,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -453,7 +434,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -469,7 +449,6 @@ impl AddressFamily {
     #[cfg(not(any(
         apple,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -483,7 +462,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -499,7 +477,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -514,7 +491,6 @@ impl AddressFamily {
     /// `AF_ISDN`
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -529,7 +505,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -545,7 +520,6 @@ impl AddressFamily {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -820,7 +794,6 @@ pub mod ipproto {
     /// `IPPROTO_IPIP`
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "horizon",
@@ -863,7 +836,6 @@ pub mod ipproto {
     /// `IPPROTO_TP`
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "cygwin",
         target_os = "espidf",
         target_os = "haiku",
@@ -876,7 +848,6 @@ pub mod ipproto {
     #[cfg(not(any(
         apple,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "dragonfly",
@@ -894,7 +865,6 @@ pub mod ipproto {
     /// `IPPROTO_RSVP`
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "cygwin",
         target_os = "espidf",
         target_os = "haiku",
@@ -906,7 +876,6 @@ pub mod ipproto {
     /// `IPPROTO_GRE`
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "cygwin",
         target_os = "espidf",
         target_os = "haiku",
@@ -939,7 +908,6 @@ pub mod ipproto {
     #[cfg(not(any(
         solarish,
         netbsdlike,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -954,7 +922,6 @@ pub mod ipproto {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -968,7 +935,6 @@ pub mod ipproto {
     /// `IPPROTO_ENCAP`
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -994,7 +960,6 @@ pub mod ipproto {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "espidf",
@@ -1023,7 +988,6 @@ pub mod ipproto {
         apple,
         netbsdlike,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "dragonfly",
@@ -1039,7 +1003,6 @@ pub mod ipproto {
     #[cfg(not(any(
         apple,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "dragonfly",
@@ -1062,7 +1025,6 @@ pub mod ipproto {
     #[cfg(not(any(
         bsd,
         solarish,
-        windows,
         target_os = "aix",
         target_os = "cygwin",
         target_os = "emscripten",
@@ -1092,7 +1054,6 @@ pub mod ipproto {
         apple,
         netbsdlike,
         solarish,
-        windows,
         target_os = "cygwin",
         target_os = "dragonfly",
         target_os = "espidf",
@@ -1701,7 +1662,6 @@ bitflags! {
         /// `SOCK_NONBLOCK`
         #[cfg(not(any(
             apple,
-            windows,
             target_os = "aix",
             target_os = "espidf",
             target_os = "haiku",
@@ -1712,7 +1672,7 @@ bitflags! {
         const NONBLOCK = bitcast!(c::SOCK_NONBLOCK);
 
         /// `SOCK_CLOEXEC`
-        #[cfg(not(any(apple, windows, target_os = "aix", target_os = "haiku")))]
+        #[cfg(not(any(apple, target_os = "aix", target_os = "haiku")))]
         const CLOEXEC = bitcast!(c::SOCK_CLOEXEC);
 
         // This deliberately lacks a `const _ = !0`, so that users can use

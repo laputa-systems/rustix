@@ -1,7 +1,6 @@
 //! Tests for [`rustix::thread`].
 
 #![cfg(feature = "thread")]
-#![cfg(not(windows))]
 
 #[cfg(not(target_os = "redox"))]
 mod clocks;

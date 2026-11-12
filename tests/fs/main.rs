@@ -1,7 +1,6 @@
 //! Tests for [`rustix::fs`].
 
 #![cfg(feature = "fs")]
-#![cfg(not(windows))]
 #![cfg_attr(core_c_str, feature(core_c_str))]
 
 mod chmodat;

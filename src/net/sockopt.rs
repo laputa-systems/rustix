@@ -7,7 +7,6 @@
 //!
 //!  - [POSIX `getsockopt`]
 //!  - [Linux `getsockopt`]
-//!  - [Winsock `getsockopt`]
 //!  - [Apple `getsockopt`]
 //!  - [FreeBSD `getsockopt`]
 //!  - [NetBSD `getsockopt`]
@@ -18,7 +17,6 @@
 //!
 //! [POSIX `getsockopt`]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/getsockopt.html
 //! [Linux `getsockopt`]: https://man7.org/linux/man-pages/man2/getsockopt.2.html
-//! [Winsock `getsockopt`]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-getsockopt
 //! [Apple `getsockopt`]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/getsockopt.2.html
 //! [FreeBSD `getsockopt`]: https://man.freebsd.org/cgi/man.cgi?query=getsockopt&sektion=2
 //! [NetBSD `getsockopt`]: https://man.netbsd.org/getsockopt.2
@@ -31,7 +29,6 @@
 //!
 //!  - [POSIX `setsockopt`]
 //!  - [Linux `setsockopt`]
-//!  - [Winsock `setsockopt`]
 //!  - [Apple `setsockopt`]
 //!  - [FreeBSD `setsockopt`]
 //!  - [NetBSD `setsockopt`]
@@ -42,7 +39,6 @@
 //!
 //! [POSIX `setsockopt`]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/setsockopt.html
 //! [Linux `setsockopt`]: https://man7.org/linux/man-pages/man2/setsockopt.2.html
-//! [Winsock `setsockopt`]: https://docs.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-setsockopt
 //! [Apple `setsockopt`]: https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/setsockopt.2.html
 //! [FreeBSD `setsockopt`]: https://man.freebsd.org/cgi/man.cgi?query=setsockopt&sektion=2
 //! [NetBSD `setsockopt`]: https://man.netbsd.org/setsockopt.2
@@ -57,12 +53,10 @@
 //!  - [References for all `set_*` functions]
 //!  - [POSIX `sys/socket.h`]
 //!  - [Linux `socket`]
-//!  - [Winsock `SOL_SOCKET` options]
 //!  - [glibc `SOL_SOCKET` Options]
 //!
 //! [POSIX `sys/socket.h`]: https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/sys_socket.h.html
 //! [Linux `socket`]: https://man7.org/linux/man-pages/man7/socket.7.html
-//! [Winsock `SOL_SOCKET` options]: https://docs.microsoft.com/en-us/windows/win32/winsock/sol-socket-socket-options
 //! [glibc `SOL_SOCKET` options]: https://sourceware.org/glibc/manual/latest/html_node/Socket_002dLevel-Options.html
 //!
 //! # References for `get_ip_*` and `set_ip_*` functions:
@@ -71,7 +65,6 @@
 //!  - [References for all `set_*` functions]
 //!  - [POSIX `netinet/in.h`]
 //!  - [Linux `ip`]
-//!  - [Winsock `IPPROTO_IP` options]
 //!  - [Apple `ip`]
 //!  - [FreeBSD `ip`]
 //!  - [NetBSD `ip`]
@@ -81,7 +74,6 @@
 //!
 //! [POSIX `netinet/in.h`]: https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/netinet_in.h.html
 //! [Linux `ip`]: https://man7.org/linux/man-pages/man7/ip.7.html
-//! [Winsock `IPPROTO_IP` options]: https://docs.microsoft.com/en-us/windows/win32/winsock/ipproto-ip-socket-options
 //! [Apple `ip`]: https://github.com/apple-oss-distributions/xnu/blob/main/bsd/man/man4/ip.4
 //! [FreeBSD `ip`]: https://man.freebsd.org/cgi/man.cgi?query=ip&sektion=4
 //! [NetBSD `ip`]: https://man.netbsd.org/ip.4
@@ -95,7 +87,6 @@
 //!  - [References for all `set_*` functions]
 //!  - [POSIX `netinet/in.h`]
 //!  - [Linux `ipv6`]
-//!  - [Winsock `IPPROTO_IPV6` options]
 //!  - [Apple `ip6`]
 //!  - [FreeBSD `ip6`]
 //!  - [NetBSD `ip6`]
@@ -105,7 +96,6 @@
 //!
 //! [POSIX `netinet/in.h`]: https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/netinet_in.h.html
 //! [Linux `ipv6`]: https://man7.org/linux/man-pages/man7/ipv6.7.html
-//! [Winsock `IPPROTO_IPV6` options]: https://docs.microsoft.com/en-us/windows/win32/winsock/ipproto-ipv6-socket-options
 //! [Apple `ip6`]: https://github.com/apple-oss-distributions/xnu/blob/main/bsd/man/man4/ip6.4
 //! [FreeBSD `ip6`]: https://man.freebsd.org/cgi/man.cgi?query=ip6&sektion=4
 //! [NetBSD `ip6`]: https://man.netbsd.org/ip6.4
@@ -119,7 +109,6 @@
 //!  - [References for all `set_*` functions]
 //!  - [POSIX `netinet/tcp.h`]
 //!  - [Linux `tcp`]
-//!  - [Winsock `IPPROTO_TCP` options]
 //!  - [Apple `tcp`]
 //!  - [FreeBSD `tcp`]
 //!  - [NetBSD `tcp`]
@@ -129,7 +118,6 @@
 //!
 //! [POSIX `netinet/tcp.h`]: https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/netinet_tcp.h.html
 //! [Linux `tcp`]: https://man7.org/linux/man-pages/man7/tcp.7.html
-//! [Winsock `IPPROTO_TCP` options]: https://docs.microsoft.com/en-us/windows/win32/winsock/ipproto-tcp-socket-options
 //! [Apple `tcp`]: https://github.com/apple-oss-distributions/xnu/blob/main/bsd/man/man4/tcp.4
 //! [FreeBSD `tcp`]: https://man.freebsd.org/cgi/man.cgi?query=tcp&sektion=4
 //! [NetBSD `tcp`]: https://man.netbsd.org/tcp.4
@@ -149,7 +137,6 @@ use crate::clockid::ClockId;
 use crate::net::xdp::{XdpMmapOffsets, XdpOptionsFlags, XdpStatistics, XdpUmemReg};
 #[cfg(not(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "cygwin",
     target_os = "dragonfly",
@@ -570,7 +557,6 @@ pub fn socket_send_buffer_size<Fd: AsFd>(fd: Fd) -> io::Result<usize> {
 /// [module-level documentation]: self#references-for-get_socket_-and-set_socket_-functions
 #[cfg(not(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "cygwin",
     target_os = "dragonfly",
@@ -628,8 +614,7 @@ pub fn socket_oobinline<Fd: AsFd>(fd: Fd) -> io::Result<bool> {
 /// See the [module-level documentation] for more.
 ///
 /// [module-level documentation]: self#references-for-get_socket_-and-set_socket_-functions
-#[cfg(not(any(solarish, windows, target_os = "cygwin")))]
-#[cfg(not(windows))]
+#[cfg(not(any(solarish, target_os = "cygwin")))]
 #[inline]
 #[doc(alias = "SO_REUSEPORT")]
 pub fn set_socket_reuseport<Fd: AsFd>(fd: Fd, value: bool) -> io::Result<()> {
@@ -641,7 +626,7 @@ pub fn set_socket_reuseport<Fd: AsFd>(fd: Fd, value: bool) -> io::Result<()> {
 /// See the [module-level documentation] for more.
 ///
 /// [module-level documentation]: self#references-for-get_socket_-and-set_socket_-functions
-#[cfg(not(any(solarish, windows, target_os = "cygwin")))]
+#[cfg(not(any(solarish, target_os = "cygwin")))]
 #[inline]
 #[doc(alias = "SO_REUSEPORT")]
 pub fn socket_reuseport<Fd: AsFd>(fd: Fd) -> io::Result<bool> {
@@ -1397,7 +1382,6 @@ pub fn ipv6_original_dst<Fd: AsFd>(fd: Fd) -> io::Result<SocketAddrV6> {
 /// [module-level documentation]: self#references-for-get_ipv6_-and-set_ipv6_-functions
 #[cfg(not(any(
     solarish,
-    windows,
     target_os = "espidf",
     target_os = "haiku",
     target_os = "horizon",
@@ -1417,7 +1401,6 @@ pub fn set_ipv6_tclass<Fd: AsFd>(fd: Fd, value: u32) -> io::Result<()> {
 /// [module-level documentation]: self#references-for-get_ipv6_-and-set_ipv6_-functions
 #[cfg(not(any(
     solarish,
-    windows,
     target_os = "espidf",
     target_os = "haiku",
     target_os = "horizon",

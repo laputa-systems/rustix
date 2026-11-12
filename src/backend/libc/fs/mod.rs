@@ -13,7 +13,6 @@ pub mod inotify;
     target_os = "wasi"
 )))]
 pub(crate) mod makedev;
-#[cfg(not(windows))]
 pub(crate) mod syscalls;
 pub(crate) mod types;
 

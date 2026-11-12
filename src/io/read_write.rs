@@ -7,7 +7,6 @@ use crate::{backend, io};
 use backend::fd::AsFd;
 
 // Declare `IoSlice` and `IoSliceMut`.
-#[cfg(not(windows))]
 pub use crate::maybe_polyfill::io::{IoSlice, IoSliceMut};
 
 #[cfg(all(linux_kernel, not(target_os = "android")))]
@@ -92,7 +91,6 @@ pub fn write<Fd: AsFd>(fd: Fd, buf: &[u8]) -> io::Result<usize> {
 /// [DragonFly BSD]: https://man.dragonflybsd.org/?command=pread&section=2
 /// [illumos]: https://illumos.org/man/2/pread
 /// [glibc]: https://sourceware.org/glibc/manual/latest/html_node/I_002fO-Primitives.html#index-pread64
-#[cfg(not(windows))]
 #[inline]
 pub fn pread<Fd: AsFd, Buf: Buffer<u8>>(
     fd: Fd,
@@ -131,7 +129,6 @@ pub fn pread<Fd: AsFd, Buf: Buffer<u8>>(
 /// [DragonFly BSD]: https://man.dragonflybsd.org/?command=pwrite&section=2
 /// [illumos]: https://illumos.org/man/2/pwrite
 /// [glibc]: https://sourceware.org/glibc/manual/latest/html_node/I_002fO-Primitives.html#index-pwrite64
-#[cfg(not(windows))]
 #[inline]
 pub fn pwrite<Fd: AsFd>(fd: Fd, buf: &[u8], offset: u64) -> io::Result<usize> {
     backend::io::syscalls::pwrite(fd.as_fd(), buf, offset)
@@ -159,7 +156,7 @@ pub fn pwrite<Fd: AsFd>(fd: Fd, buf: &[u8], offset: u64) -> io::Result<usize> {
 /// [DragonFly BSD]: https://man.dragonflybsd.org/?command=readv&section=2
 /// [illumos]: https://illumos.org/man/2/readv
 /// [glibc]: https://sourceware.org/glibc/manual/latest/html_node/Scatter_002dGather.html#index-readv
-#[cfg(not(any(windows, target_os = "espidf", target_os = "horizon")))]
+#[cfg(not(any(target_os = "espidf", target_os = "horizon")))]
 #[inline]
 pub fn readv<Fd: AsFd>(fd: Fd, bufs: &mut [IoSliceMut<'_>]) -> io::Result<usize> {
     backend::io::syscalls::readv(fd.as_fd(), bufs)
@@ -187,7 +184,7 @@ pub fn readv<Fd: AsFd>(fd: Fd, bufs: &mut [IoSliceMut<'_>]) -> io::Result<usize>
 /// [DragonFly BSD]: https://man.dragonflybsd.org/?command=writev&section=2
 /// [illumos]: https://illumos.org/man/2/writev
 /// [glibc]: https://sourceware.org/glibc/manual/latest/html_node/Scatter_002dGather.html#index-writev
-#[cfg(not(any(windows, target_os = "espidf", target_os = "horizon")))]
+#[cfg(not(any(target_os = "espidf", target_os = "horizon")))]
 #[inline]
 pub fn writev<Fd: AsFd>(fd: Fd, bufs: &[IoSlice<'_>]) -> io::Result<usize> {
     backend::io::syscalls::writev(fd.as_fd(), bufs)
@@ -213,7 +210,6 @@ pub fn writev<Fd: AsFd>(fd: Fd, bufs: &[IoSlice<'_>]) -> io::Result<usize> {
 /// [illumos]: https://illumos.org/man/2/preadv
 /// [glibc]: https://sourceware.org/glibc/manual/latest/html_node/Scatter_002dGather.html#index-preadv64
 #[cfg(not(any(
-    windows,
     target_os = "cygwin",
     target_os = "espidf",
     target_os = "haiku",
@@ -251,7 +247,6 @@ pub fn preadv<Fd: AsFd>(fd: Fd, bufs: &mut [IoSliceMut<'_>], offset: u64) -> io:
 /// [illumos]: https://illumos.org/man/2/pwritev
 /// [glibc]: https://sourceware.org/glibc/manual/latest/html_node/I_002fO-Primitives.html#index-pwrite64
 #[cfg(not(any(
-    windows,
     target_os = "cygwin",
     target_os = "espidf",
     target_os = "haiku",

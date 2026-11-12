@@ -1,11 +1,11 @@
 use rustix::event::{PollFd, PollFlags};
 use rustix::fd::{AsFd as _, AsRawFd as _, FromRawFd as _, IntoRawFd as _, OwnedFd};
 #[cfg(feature = "pipe")]
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 use {rustix::event::poll, rustix::io::retry_on_intr};
 
 #[cfg(feature = "pipe")]
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[test]
 fn test_poll() {
     use rustix::event::Timespec;

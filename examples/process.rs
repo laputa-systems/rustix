@@ -1,7 +1,6 @@
 //! A command which prints out information about the process it runs in.
 
 #[cfg(all(feature = "process", feature = "param", feature = "system"))]
-#[cfg(not(windows))]
 fn main() -> rustix::io::Result<()> {
     #[cfg(not(target_os = "espidf"))]
     use rustix::param::*;
@@ -120,9 +119,8 @@ fn main() -> rustix::io::Result<()> {
 }
 
 #[cfg(any(
-    windows,
     not(all(feature = "process", feature = "param", feature = "system"))
 ))]
 fn main() -> Result<(), &'static str> {
-    Err("This example requires --features=process,param,system and is not supported on Windows.")
+    Err("This example requires --features=process,param,system.")
 }

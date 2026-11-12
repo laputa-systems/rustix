@@ -14,7 +14,6 @@ bitflags! {
         #[cfg(not(any(
             bsd,
             solarish,
-            windows,
             target_os = "aix",
             target_os = "cygwin",
             target_os = "espidf",
@@ -29,16 +28,14 @@ bitflags! {
         /// `MSG_DONTROUTE`
         const DONTROUTE = bitcast!(c::MSG_DONTROUTE);
         /// `MSG_DONTWAIT`
-        #[cfg(not(windows))]
         const DONTWAIT = bitcast!(c::MSG_DONTWAIT);
         /// `MSG_EOR`
-        #[cfg(not(any(windows, target_os = "horizon")))]
+        #[cfg(not(any(target_os = "horizon")))]
         const EOR = bitcast!(c::MSG_EOR);
         /// `MSG_MORE`
         #[cfg(not(any(
             bsd,
             solarish,
-            windows,
             target_os = "aix",
             target_os = "cygwin",
             target_os = "haiku",
@@ -48,7 +45,7 @@ bitflags! {
             target_os = "vita",
         )))]
         const MORE = bitcast!(c::MSG_MORE);
-        #[cfg(not(any(apple, windows, target_os = "redox", target_os = "vita")))]
+        #[cfg(not(any(apple, target_os = "redox", target_os = "vita")))]
         /// `MSG_NOSIGNAL`
         const NOSIGNAL = bitcast!(c::MSG_NOSIGNAL);
         /// `MSG_OOB`
@@ -72,7 +69,6 @@ bitflags! {
         #[cfg(not(any(
             apple,
             solarish,
-            windows,
             target_os = "aix",
             target_os = "espidf",
             target_os = "haiku",
@@ -83,13 +79,11 @@ bitflags! {
         )))]
         const CMSG_CLOEXEC = bitcast!(c::MSG_CMSG_CLOEXEC);
         /// `MSG_DONTWAIT`
-        #[cfg(not(windows))]
         const DONTWAIT = bitcast!(c::MSG_DONTWAIT);
         /// `MSG_ERRQUEUE`
         #[cfg(not(any(
             bsd,
             solarish,
-            windows,
             target_os = "aix",
             target_os = "cygwin",
             target_os = "espidf",
@@ -131,7 +125,7 @@ bitflags! {
         /// `MSG_OOB`
         const OOB = bitcast!(c::MSG_OOB);
         /// `MSG_EOR`
-        #[cfg(not(any(windows, target_os = "horizon")))]
+        #[cfg(not(any(target_os = "horizon")))]
         const EOR = bitcast!(c::MSG_EOR);
         /// `MSG_TRUNC`
         #[cfg(not(target_os = "horizon"))]

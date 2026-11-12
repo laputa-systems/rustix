@@ -23,33 +23,3 @@ mod unix;
 mod unix_alloc;
 mod v4;
 mod v6;
-
-#[cfg(windows)]
-mod windows {
-    // With Rust 1.70 this can be `std::sync::OnceLock`.
-    use once_cell::sync::OnceCell as OnceLock;
-
-    pub struct Thing;
-
-    impl Thing {
-        pub fn new() -> Self {
-            let _ = rustix::net::wsa_startup().unwrap();
-            Self
-        }
-    }
-
-    impl Drop for Thing {
-        fn drop(&mut self) {
-            rustix::net::wsa_cleanup().unwrap();
-        }
-    }
-
-    pub static CLEANUP: OnceLock<Thing> = OnceLock::new();
-}
-
-/// Checks whether the Windows socket interface has been started already, and
-/// if not, starts it.
-pub fn init() {
-    #[cfg(windows)]
-    let _ = windows::CLEANUP.get_or_init(|| windows::Thing::new());
-}

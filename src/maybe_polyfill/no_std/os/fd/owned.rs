@@ -239,8 +239,7 @@ impl fmt::Debug for OwnedFd {
 /// A trait to borrow the file descriptor from an underlying object.
 ///
 /// This is only available on unix platforms and must be imported in order to
-/// call the method. Windows platforms have a corresponding `AsHandle` and
-/// `AsSocket` set of traits.
+/// call the method.
 #[cfg_attr(staged_api, unstable(feature = "io_safety", issue = "87074"))]
 pub trait AsFd {
     /// Borrows the file descriptor.

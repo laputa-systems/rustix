@@ -5,22 +5,19 @@
 use super::c;
 #[cfg(all(
     feature = "alloc",
-    not(any(windows, target_os = "espidf", target_os = "horizon"))
+    not(any(target_os = "espidf", target_os = "horizon"))
 ))]
 use super::fd::IntoRawFd as _;
 use super::fd::{AsRawFd as _, BorrowedFd, FromRawFd as _, LibcFd, OwnedFd, RawFd};
-#[cfg(not(windows))]
 use crate::ffi::CStr;
 use crate::io;
 
-#[cfg(not(windows))]
 #[inline]
 pub(super) fn c_str(c: &CStr) -> *const c::c_char {
     c.as_ptr().cast()
 }
 
 #[cfg(not(any(
-    windows,
     target_os = "espidf",
     target_os = "horizon",
     target_os = "vita",
@@ -38,7 +35,7 @@ pub(super) fn borrowed_fd(fd: BorrowedFd<'_>) -> LibcFd {
 
 #[cfg(all(
     feature = "alloc",
-    not(any(windows, target_os = "espidf", target_os = "horizon"))
+    not(any(target_os = "espidf", target_os = "horizon"))
 ))]
 #[inline]
 pub(super) fn owned_fd(fd: OwnedFd) -> LibcFd {
@@ -64,7 +61,7 @@ pub(super) fn nonnegative_ret(raw: c::c_int) -> io::Result<()> {
     }
 }
 
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub(super) unsafe fn ret_infallible(raw: c::c_int) {
     debug_assert_eq!(raw, 0, "unexpected error: {:?}", io::Errno::last_os_error());
@@ -103,7 +100,6 @@ pub(super) fn ret_usize(raw: c::ssize_t) -> io::Result<usize> {
     }
 }
 
-#[cfg(not(windows))]
 #[cfg(feature = "fs")]
 #[inline]
 pub(super) fn ret_off_t(raw: c::off_t) -> io::Result<c::off_t> {
@@ -114,7 +110,7 @@ pub(super) fn ret_off_t(raw: c::off_t) -> io::Result<c::off_t> {
     }
 }
 
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub(super) fn ret_pid_t(raw: c::pid_t) -> io::Result<c::pid_t> {
     if raw == -1 {
@@ -139,7 +135,7 @@ pub(super) unsafe fn ret_owned_fd(raw: LibcFd) -> io::Result<OwnedFd> {
     }
 }
 
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub(super) fn ret_discarded_fd(raw: LibcFd) -> io::Result<()> {
     if raw == !0 {
@@ -149,7 +145,7 @@ pub(super) fn ret_discarded_fd(raw: LibcFd) -> io::Result<()> {
     }
 }
 
-#[cfg(all(feature = "alloc", not(any(windows, target_os = "wasi"))))]
+#[cfg(all(feature = "alloc", not(any(target_os = "wasi"))))]
 #[inline]
 pub(super) fn ret_discarded_char_ptr(raw: *mut c::c_char) -> io::Result<()> {
     if raw.is_null() {
@@ -160,32 +156,15 @@ pub(super) fn ret_discarded_char_ptr(raw: *mut c::c_char) -> io::Result<()> {
 }
 
 /// Convert the buffer-length argument value of a `send` or `recv` call.
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub(super) fn send_recv_len(len: usize) -> usize {
     len
 }
 
-/// Convert the buffer-length argument value of a `send` or `recv` call.
-#[cfg(windows)]
-#[inline]
-pub(super) fn send_recv_len(len: usize) -> i32 {
-    // On Windows, the length argument has type `i32`; saturate the length,
-    // since `send` and `recv` are allowed to send and recv less data than
-    // requested.
-    len.try_into().unwrap_or(i32::MAX)
-}
-
 /// Convert the return value of a `send` or `recv` call.
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub(super) fn ret_send_recv(len: isize) -> io::Result<usize> {
     ret_usize(len)
-}
-
-/// Convert the return value of a `send` or `recv` call.
-#[cfg(windows)]
-#[inline]
-pub(super) fn ret_send_recv(len: i32) -> io::Result<usize> {
-    ret_usize(len as isize)
 }

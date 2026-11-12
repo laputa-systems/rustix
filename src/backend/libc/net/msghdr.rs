@@ -13,7 +13,7 @@ use core::mem::zeroed;
 
 /// Convert the value to the `msg_iovlen` field of a `msghdr` struct.
 #[cfg(all(
-    not(any(windows, target_os = "espidf", target_os = "wasi")),
+    not(any(target_os = "espidf", target_os = "wasi")),
     any(
         target_os = "android",
         target_os = "redox",
@@ -31,7 +31,7 @@ fn msg_iov_len(len: usize) -> c::size_t {
 
 /// Convert the value to the `msg_iovlen` field of a `msghdr` struct.
 #[cfg(all(
-    not(any(windows, target_os = "espidf", target_os = "vita", target_os = "wasi")),
+    not(any(target_os = "espidf", target_os = "vita", target_os = "wasi")),
     not(any(
         target_os = "android",
         target_os = "redox",
@@ -69,7 +69,6 @@ fn msg_control_len(len: usize) -> c::socklen_t {
 #[cfg(not(any(
     bsd,
     solarish,
-    windows,
     target_env = "musl",
     target_os = "aix",
     target_os = "cygwin",

@@ -61,7 +61,6 @@ fn test_truncated_scm_rights() {
     /// The number of file descriptors the receive buffer has room for.
     const NUM_SLOTS: usize = 5;
 
-    crate::init();
 
     let (send_sock, recv_sock) = socketpair(
         AddressFamily::UNIX,

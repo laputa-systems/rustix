@@ -18,7 +18,6 @@
 mod ioctl;
 #[cfg(not(target_os = "wasi"))]
 mod tc;
-#[cfg(not(windows))]
 mod tty;
 #[cfg(not(any(target_os = "espidf", target_os = "wasi")))]
 mod types;
@@ -32,7 +31,6 @@ mod types;
 pub use ioctl::*;
 #[cfg(not(target_os = "wasi"))]
 pub use tc::*;
-#[cfg(not(windows))]
 pub use tty::*;
 #[cfg(not(any(target_os = "espidf", target_os = "wasi")))]
 pub use types::*;

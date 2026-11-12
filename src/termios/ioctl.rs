@@ -22,7 +22,6 @@ use backend::c;
 /// [NetBSD]: https://man.netbsd.org/tty.4
 /// [OpenBSD]: https://man.openbsd.org/tty.4
 #[cfg(not(any(
-    windows,
     target_os = "horizon",
     target_os = "redox",
     target_os = "wasi"
@@ -50,7 +49,6 @@ pub fn ioctl_tiocexcl<Fd: AsFd>(fd: Fd) -> io::Result<()> {
 /// [NetBSD]: https://man.netbsd.org/tty.4
 /// [OpenBSD]: https://man.openbsd.org/tty.4
 #[cfg(not(any(
-    windows,
     target_os = "horizon",
     target_os = "redox",
     target_os = "wasi"

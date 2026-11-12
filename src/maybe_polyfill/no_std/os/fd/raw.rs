@@ -18,8 +18,7 @@ pub type RawFd = c::c_int;
 /// A trait to extract the raw file descriptor from an underlying object.
 ///
 /// This is only available on unix and WASI platforms and must be imported in
-/// order to call the method. Windows platforms have a corresponding
-/// `AsRawHandle` and `AsRawSocket` set of traits.
+/// order to call the method.
 #[cfg_attr(staged_api, stable(feature = "rust1", since = "1.0.0"))]
 pub trait AsRawFd {
     /// Extracts the raw file descriptor.

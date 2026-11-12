@@ -71,7 +71,6 @@ use bsd as platform;
 ///
 /// # References
 ///  - [Linux]
-///  - [Winsock]
 ///  - [FreeBSD]
 ///  - [NetBSD]
 ///  - [OpenBSD]
@@ -80,7 +79,6 @@ use bsd as platform;
 ///  - [illumos]
 ///
 /// [Linux]: https://man7.org/linux/man-pages/man2/ioctl.2.html
-/// [Winsock]: https://learn.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-ioctlsocket
 /// [FreeBSD]: https://man.freebsd.org/cgi/man.cgi?query=ioctl&sektion=2
 /// [NetBSD]: https://man.netbsd.org/ioctl.2
 /// [OpenBSD]: https://man.openbsd.org/ioctl.2
@@ -340,9 +338,6 @@ type _Opcode = c::c_int;
 #[cfg(target_os = "espidf")]
 type _Opcode = c::c_uint;
 
-// Windows has `ioctlsocket`, which uses `i32`.
-#[cfg(windows)]
-type _Opcode = i32;
 
 #[cfg(linux_raw_dep)]
 #[cfg(not(any(target_arch = "sparc", target_arch = "sparc64")))]

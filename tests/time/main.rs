@@ -1,7 +1,7 @@
 //! Tests for [`rustix::time`].
 
 #![cfg(feature = "time")]
-#![cfg(not(any(windows, target_os = "espidf")))]
+#![cfg(not(any(target_os = "espidf")))]
 
 mod clocks;
 #[cfg(not(any(target_os = "redox", target_os = "wasi")))]

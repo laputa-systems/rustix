@@ -8,7 +8,6 @@
 //! standard library is available), the file `src/polyfill/std` is used
 //! instead, which just imports the respective items from `std`.
 
-#[cfg(not(windows))]
 pub mod io;
 #[cfg(not(target_os = "wasi"))]
 #[cfg(feature = "net")]

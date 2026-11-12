@@ -14,7 +14,6 @@ fn encode_decode() {
     let decoded = SocketAddrV6::try_from(encoded).unwrap();
     assert_eq!(decoded, orig);
 
-    #[cfg(not(windows))]
     {
         let orig = SocketAddrUnix::new("/path/to/socket").unwrap();
         let encoded = SocketAddrAny::from(orig.clone());
@@ -23,7 +22,6 @@ fn encode_decode() {
     }
 }
 
-#[cfg(not(windows))]
 #[test]
 fn test_unix_addr() {
     use rustix::cstr;

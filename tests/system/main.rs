@@ -1,7 +1,7 @@
 //! Tests for [`rustix::system`].
 
 #![cfg(feature = "system")]
-#![cfg(not(any(windows, target_os = "wasi")))]
+#![cfg(not(any(target_os = "wasi")))]
 
 #[cfg(linux_kernel)]
 mod module;

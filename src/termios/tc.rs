@@ -22,7 +22,7 @@ pub use crate::pid::Pid;
 /// [POSIX `tcgetattr`]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/tcgetattr.html
 /// [Linux `ioctl_tty`]: https://man7.org/linux/man-pages/man4/tty_ioctl.4.html
 /// [Linux `termios`]: https://man7.org/linux/man-pages/man3/termios.3.html
-#[cfg(not(any(windows, target_os = "espidf", target_os = "wasi")))]
+#[cfg(not(any(target_os = "espidf", target_os = "wasi")))]
 #[inline]
 #[doc(alias = "TCGETS")]
 #[doc(alias = "TCGETS2")]
@@ -40,7 +40,6 @@ pub fn tcgetattr<Fd: AsFd>(fd: Fd) -> io::Result<Termios> {
 ///
 /// [Linux]: https://man7.org/linux/man-pages/man4/tty_ioctl.4.html
 #[cfg(not(any(
-    windows,
     target_os = "horizon",
     target_os = "espidf",
     target_os = "wasi"
@@ -66,7 +65,7 @@ pub fn tcgetwinsize<Fd: AsFd>(fd: Fd) -> io::Result<Winsize> {
 ///
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/tcgetpgrp.html
 /// [Linux]: https://man7.org/linux/man-pages/man3/tcgetpgrp.3.html
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 #[doc(alias = "TIOCGPGRP")]
 pub fn tcgetpgrp<Fd: AsFd>(fd: Fd) -> io::Result<Pid> {
@@ -83,7 +82,7 @@ pub fn tcgetpgrp<Fd: AsFd>(fd: Fd) -> io::Result<Pid> {
 ///
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/tcsetpgrp.html
 /// [Linux]: https://man7.org/linux/man-pages/man3/tcsetpgrp.3.html
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 #[doc(alias = "TIOCSPGRP")]
 pub fn tcsetpgrp<Fd: AsFd>(fd: Fd, pid: Pid) -> io::Result<()> {

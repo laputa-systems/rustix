@@ -8,7 +8,6 @@ use std::mem::MaybeUninit;
 /// Test `recv` with `&mut [MaybeUninit<u8>]` with the `RecvFlags::Trunc` flag.
 #[test]
 fn net_recv_uninit_trunc() {
-    crate::init();
 
     let tmpdir = tempfile::tempdir().unwrap();
     let path = tmpdir.path().join("recv_uninit_trunc");
@@ -58,7 +57,6 @@ fn net_recv_uninit_trunc() {
 #[cfg(not(target_os = "redox"))]
 #[test]
 fn net_recvmsg_trunc() {
-    crate::init();
 
     let tmpdir = tempfile::tempdir().unwrap();
     let path = tmpdir.path().join("recvmsg_trunc");

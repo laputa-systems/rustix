@@ -80,9 +80,6 @@ fn test_backends() {
         );
     }
 
-    #[cfg(windows)]
-    let libc_dep = "windows-sys";
-    #[cfg(any(unix, target_os = "wasi"))]
     let libc_dep = "libc";
 
     // Test the use-libc crate, which enables the "use-libc" cargo feature.
@@ -118,12 +115,6 @@ fn test_backends() {
         libc_dep
     );
 
-    // Test that the windows crate does not depend on libc.
-    #[cfg(windows)]
-    assert!(
-        !has_dependency("test-crates/use-default", &[], &[], &[], "libc"),
-        "use-default depends on libc on windows",
-    );
 }
 
 /// Test whether the crate at directory `dir` has a dependency on `dependency`,

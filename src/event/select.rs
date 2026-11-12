@@ -10,7 +10,7 @@ use crate::backend::c;
 use crate::event::Timespec;
 use crate::fd::RawFd;
 use crate::{backend, io};
-#[cfg(any(windows, target_os = "wasi"))]
+#[cfg(any(target_os = "wasi"))]
 use core::mem::align_of;
 use core::mem::size_of;
 
@@ -26,13 +26,10 @@ struct FD_SET {
     fd_array: [i32; c::FD_SETSIZE],
 }
 
-#[cfg(windows)]
-use windows_sys::Win32::Networking::WinSock::FD_SET;
-
 /// Storage element type for use with [`select`].
 #[cfg(all(
     target_pointer_width = "64",
-    any(windows, target_os = "freebsd", target_os = "dragonfly")
+    any(target_os = "freebsd", target_os = "dragonfly")
 ))]
 #[repr(transparent)]
 #[derive(Copy, Clone, Default)]
@@ -50,7 +47,7 @@ pub struct FdSetElement(pub(crate) c::c_ulong);
     target_os = "wasi",
     all(
         target_pointer_width = "64",
-        any(windows, target_os = "freebsd", target_os = "dragonfly")
+        any(target_os = "freebsd", target_os = "dragonfly")
     )
 )))]
 #[repr(transparent)]
@@ -103,7 +100,6 @@ pub struct FdSetElement(pub(crate) usize);
 ///  - [NetBSD]
 ///  - [OpenBSD]
 ///  - [DragonFly BSD]
-///  - [Winsock]
 ///  - [glibc]
 ///
 /// [POSIX]: https://pubs.opengroup.org/onlinepubs/9799919799/functions/select.html
@@ -113,7 +109,6 @@ pub struct FdSetElement(pub(crate) usize);
 /// [NetBSD]: https://man.netbsd.org/select.2
 /// [OpenBSD]: https://man.openbsd.org/select.2
 /// [DragonFly BSD]: https://man.dragonflybsd.org/?command=select&section=2
-/// [Winsock]: https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-select
 /// [glibc]: https://sourceware.org/glibc/manual/latest/html_node/Waiting-for-I_002fO.html#index-select
 pub unsafe fn select(
     nfds: i32,
@@ -125,20 +120,20 @@ pub unsafe fn select(
     backend::event::syscalls::select(nfds, readfds, writefds, exceptfds, timeout)
 }
 
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 const BITS: usize = size_of::<FdSetElement>() * 8;
 
 /// Set `fd` in the set pointed to by `fds`.
 #[doc(alias = "FD_SET")]
 #[inline]
 pub fn fd_set_insert(fds: &mut [FdSetElement], fd: RawFd) {
-    #[cfg(not(any(windows, target_os = "wasi")))]
+    #[cfg(not(any(target_os = "wasi")))]
     {
         let fd = fd as usize;
         fds[fd / BITS].0 |= 1 << (fd % BITS);
     }
 
-    #[cfg(any(windows, target_os = "wasi"))]
+    #[cfg(any(target_os = "wasi"))]
     {
         let set = unsafe { &mut *fds.as_mut_ptr().cast::<FD_SET>() };
         let fd_count = set.fd_count;
@@ -156,13 +151,13 @@ pub fn fd_set_insert(fds: &mut [FdSetElement], fd: RawFd) {
 #[doc(alias = "FD_CLR")]
 #[inline]
 pub fn fd_set_remove(fds: &mut [FdSetElement], fd: RawFd) {
-    #[cfg(not(any(windows, target_os = "wasi")))]
+    #[cfg(not(any(target_os = "wasi")))]
     {
         let fd = fd as usize;
         fds[fd / BITS].0 &= !(1 << (fd % BITS));
     }
 
-    #[cfg(any(windows, target_os = "wasi"))]
+    #[cfg(any(target_os = "wasi"))]
     {
         let set = unsafe { &mut *fds.as_mut_ptr().cast::<FD_SET>() };
         let fd_count = set.fd_count;
@@ -178,7 +173,7 @@ pub fn fd_set_remove(fds: &mut [FdSetElement], fd: RawFd) {
 /// Compute the minimum `nfds` value needed for the set pointed to by `fds`.
 #[inline]
 pub fn fd_set_bound(fds: &[FdSetElement]) -> RawFd {
-    #[cfg(not(any(windows, target_os = "wasi")))]
+    #[cfg(not(any(target_os = "wasi")))]
     {
         if let Some(position) = fds.iter().rposition(|element| element.0 != 0) {
             let element = fds[position].0;
@@ -188,7 +183,7 @@ pub fn fd_set_bound(fds: &[FdSetElement]) -> RawFd {
         }
     }
 
-    #[cfg(any(windows, target_os = "wasi"))]
+    #[cfg(any(target_os = "wasi"))]
     {
         let set = unsafe { &*fds.as_ptr().cast::<FD_SET>() };
         let fd_count = set.fd_count;
@@ -207,14 +202,14 @@ pub fn fd_set_bound(fds: &[FdSetElement]) -> RawFd {
 /// contain up to `set_count` file descriptors with values less than `nfds`.
 #[inline]
 pub fn fd_set_num_elements(set_count: usize, nfds: RawFd) -> usize {
-    #[cfg(any(windows, target_os = "wasi"))]
+    #[cfg(any(target_os = "wasi"))]
     {
         let _ = nfds;
 
         fd_set_num_elements_for_fd_array(set_count)
     }
 
-    #[cfg(not(any(windows, target_os = "wasi")))]
+    #[cfg(not(any(target_os = "wasi")))]
     {
         let _ = set_count;
 
@@ -224,7 +219,7 @@ pub fn fd_set_num_elements(set_count: usize, nfds: RawFd) -> usize {
 
 /// `fd_set_num_elements` implementation on platforms with fd array
 /// implementations.
-#[cfg(any(windows, target_os = "wasi"))]
+#[cfg(any(target_os = "wasi"))]
 #[inline]
 pub(crate) fn fd_set_num_elements_for_fd_array(set_count: usize) -> usize {
     // Ensure that we always have a big enough set to dereference an `FD_SET`.
@@ -236,7 +231,7 @@ pub(crate) fn fd_set_num_elements_for_fd_array(set_count: usize) -> usize {
 
 /// Compute the raw `fd_set_num_elements` value, before ensuring the value is
 /// big enough to dereference an `FD_SET`.
-#[cfg(any(windows, target_os = "wasi"))]
+#[cfg(any(target_os = "wasi"))]
 #[inline]
 fn fd_set_num_elements_for_fd_array_raw(set_count: usize) -> usize {
     // Allocate space for an `fd_count` field, plus `set_count` elements
@@ -249,7 +244,7 @@ fn fd_set_num_elements_for_fd_array_raw(set_count: usize) -> usize {
 
 /// `fd_set_num_elements` implementation on platforms with bitvector
 /// implementations.
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub(crate) fn fd_set_num_elements_for_bitvector(nfds: RawFd) -> usize {
     // Allocate space for a dense bitvector for `nfds` bits.
@@ -269,7 +264,7 @@ fn div_ceil(lhs: usize, rhs: usize) -> usize {
 
 /// An iterator over the fds in a set.
 #[doc(alias = "FD_ISSET")]
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 pub struct FdSetIter<'a> {
     current: RawFd,
     fds: &'a [FdSetElement],
@@ -277,7 +272,7 @@ pub struct FdSetIter<'a> {
 
 /// An iterator over the fds in a set.
 #[doc(alias = "FD_ISSET")]
-#[cfg(any(windows, target_os = "wasi"))]
+#[cfg(any(target_os = "wasi"))]
 pub struct FdSetIter<'a> {
     current: usize,
     fds: &'a [FdSetElement],
@@ -290,7 +285,7 @@ impl<'a> FdSetIter<'a> {
     }
 }
 
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 impl<'a> Iterator for FdSetIter<'a> {
     type Item = RawFd;
 
@@ -320,7 +315,7 @@ impl<'a> Iterator for FdSetIter<'a> {
     }
 }
 
-#[cfg(any(windows, target_os = "wasi"))]
+#[cfg(any(target_os = "wasi"))]
 impl<'a> Iterator for FdSetIter<'a> {
     type Item = RawFd;
 
@@ -346,7 +341,7 @@ mod tests {
     use core::mem::{align_of, size_of};
 
     #[test]
-    #[cfg(any(windows, target_os = "wasi"))]
+    #[cfg(any(target_os = "wasi"))]
     fn layouts() {
         // The `FdSetElement` array should be suitably aligned.
         assert_eq!(align_of::<FdSetElement>(), align_of::<FD_SET>());

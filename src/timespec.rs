@@ -219,7 +219,7 @@ impl Timespec {
 
     /// Convert from `Timespec` to `c::timeval`, rounding up fractional
     /// microseconds and carrying any overflow into seconds.
-    #[cfg(all(any(libc, target_os = "wasi"), not(windows)))]
+    #[cfg(all(any(libc, target_os = "wasi")))]
     pub(crate) fn to_timeval(&self) -> crate::io::Result<c::timeval> {
         let (sec, usec) = self.to_sec_usec().ok_or(crate::io::Errno::INVAL)?;
         Ok(c::timeval {
@@ -228,16 +228,6 @@ impl Timespec {
         })
     }
 
-    /// Convert from `Timespec` to `c::TIMEVAL`, rounding up fractional
-    /// microseconds and carrying any overflow into seconds.
-    #[cfg(windows)]
-    pub(crate) fn to_timeval(&self) -> crate::io::Result<c::TIMEVAL> {
-        let (sec, usec) = self.to_sec_usec().ok_or(crate::io::Errno::OPNOTSUPP)?;
-        Ok(c::TIMEVAL {
-            tv_sec: sec.try_into().map_err(|_| crate::io::Errno::OPNOTSUPP)?,
-            tv_usec: usec as _,
-        })
-    }
 }
 
 impl TryFrom<Timespec> for Duration {
@@ -431,7 +421,7 @@ mod tests {
         assert_eq!(t.tv_sec as u64, 0x1_0000_0000_u64);
     }
 
-    #[cfg(any(libc, target_os = "wasi", windows))]
+    #[cfg(any(libc, target_os = "wasi"))]
     #[test]
     fn test_to_timeval() {
         let ts = Timespec {

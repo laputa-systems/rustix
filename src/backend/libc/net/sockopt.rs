@@ -20,7 +20,6 @@ use crate::net::sockopt::{Ipv4PathMtuDiscovery, Ipv6PathMtuDiscovery};
 use crate::net::xdp::{XdpMmapOffsets, XdpOptionsFlags, XdpRingOffset, XdpStatistics, XdpUmemReg};
 #[cfg(not(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "cygwin",
     target_os = "dragonfly",
@@ -97,10 +96,8 @@ fn getsockopt<T: Copy>(fd: BorrowedFd<'_>, level: i32, optname: i32) -> io::Resu
     let mut value = MaybeUninit::<T>::zeroed();
     getsockopt_raw(fd, level, optname, &mut value, &mut optlen)?;
 
-    // On Windows at least, `getsockopt` has been observed writing 1
-    // byte on at least (`IPPROTO_TCP`, `TCP_NODELAY`), even though
-    // Windows' documentation says that should write a 4-byte `BOOL`.
-    // So, we initialize the memory to zeros above, and just assert
+    // Some `getsockopt` implementations write fewer bytes than the full
+    // option size; initialize the memory to zeros above, and just assert
     // that `getsockopt` doesn't write too many bytes here.
     assert!(
         optlen as usize <= size_of::<T>(),
@@ -227,7 +224,6 @@ pub(crate) fn set_socket_timeout(
         Timeout::Send => c::SO_SNDTIMEO,
     };
 
-    #[cfg(not(windows))]
     let timeout = match timeout {
         Some(timeout) => {
             if timeout == Duration::ZERO {
@@ -259,26 +255,6 @@ pub(crate) fn set_socket_timeout(
         },
     };
 
-    #[cfg(windows)]
-    let timeout: u32 = match timeout {
-        Some(timeout) => {
-            if timeout == Duration::ZERO {
-                return Err(io::Errno::INVAL);
-            }
-
-            // `as_millis` rounds down, so we use `as_nanos` and
-            // manually round up.
-            let mut timeout: u32 = ((timeout.as_nanos() + 999_999) / 1_000_000)
-                .try_into()
-                .map_err(|_convert_err| io::Errno::INVAL)?;
-            if timeout == 0 {
-                timeout = 1;
-            }
-            timeout
-        }
-        None => 0,
-    };
-
     setsockopt(fd, c::SOL_SOCKET, optname, timeout)
 }
 
@@ -289,27 +265,14 @@ pub(crate) fn socket_timeout(fd: BorrowedFd<'_>, id: Timeout) -> io::Result<Opti
         Timeout::Send => c::SO_SNDTIMEO,
     };
 
-    #[cfg(not(windows))]
-    {
-        let timeout: c::timeval = getsockopt(fd, c::SOL_SOCKET, optname)?;
-        if timeout.tv_sec == 0 && timeout.tv_usec == 0 {
-            Ok(None)
-        } else {
-            Ok(Some(
-                Duration::from_secs(timeout.tv_sec as u64)
-                    + Duration::from_micros(timeout.tv_usec as u64),
-            ))
-        }
-    }
-
-    #[cfg(windows)]
-    {
-        let timeout: u32 = getsockopt(fd, c::SOL_SOCKET, optname)?;
-        if timeout == 0 {
-            Ok(None)
-        } else {
-            Ok(Some(Duration::from_millis(timeout as u64)))
-        }
+    let timeout: c::timeval = getsockopt(fd, c::SOL_SOCKET, optname)?;
+    if timeout.tv_sec == 0 && timeout.tv_usec == 0 {
+        Ok(None)
+    } else {
+        Ok(Some(
+            Duration::from_secs(timeout.tv_sec as u64)
+                + Duration::from_micros(timeout.tv_usec as u64),
+        ))
     }
 }
 
@@ -384,7 +347,6 @@ pub(crate) fn socket_send_buffer_size(fd: BorrowedFd<'_>) -> io::Result<usize> {
 #[inline]
 #[cfg(not(any(
     apple,
-    windows,
     target_os = "aix",
     target_os = "cygwin",
     target_os = "dragonfly",
@@ -420,13 +382,13 @@ pub(crate) fn socket_oobinline(fd: BorrowedFd<'_>) -> io::Result<bool> {
     getsockopt(fd, c::SOL_SOCKET, c::SO_OOBINLINE).map(to_bool)
 }
 
-#[cfg(not(any(solarish, windows, target_os = "cygwin")))]
+#[cfg(not(any(solarish, target_os = "cygwin")))]
 #[inline]
 pub(crate) fn set_socket_reuseport(fd: BorrowedFd<'_>, value: bool) -> io::Result<()> {
     setsockopt(fd, c::SOL_SOCKET, c::SO_REUSEPORT, from_bool(value))
 }
 
-#[cfg(not(any(solarish, windows, target_os = "cygwin")))]
+#[cfg(not(any(solarish, target_os = "cygwin")))]
 #[inline]
 pub(crate) fn socket_reuseport(fd: BorrowedFd<'_>) -> io::Result<bool> {
     getsockopt(fd, c::SOL_SOCKET, c::SO_REUSEPORT).map(to_bool)
@@ -899,7 +861,6 @@ pub(crate) fn ipv6_original_dst(fd: BorrowedFd<'_>) -> io::Result<SocketAddrV6> 
 
 #[cfg(not(any(
     solarish,
-    windows,
     target_os = "espidf",
     target_os = "haiku",
     target_os = "horizon",
@@ -913,7 +874,6 @@ pub(crate) fn set_ipv6_tclass(fd: BorrowedFd<'_>, value: u32) -> io::Result<()> 
 
 #[cfg(not(any(
     solarish,
-    windows,
     target_os = "espidf",
     target_os = "haiku",
     target_os = "horizon",
@@ -1299,15 +1259,9 @@ fn to_ip_mreq(multiaddr: &Ipv4Addr, interface: &Ipv4Addr) -> c::ip_mreq {
     }
 }
 
-#[cfg(not(windows))]
 #[inline]
 fn from_in_addr(in_addr: c::in_addr) -> Ipv4Addr {
     Ipv4Addr::from(in_addr.s_addr.to_ne_bytes())
-}
-
-#[cfg(windows)]
-fn from_in_addr(in_addr: c::in_addr) -> Ipv4Addr {
-    Ipv4Addr::from(unsafe { in_addr.S_un.S_addr.to_ne_bytes() })
 }
 
 #[cfg(any(
@@ -1371,10 +1325,6 @@ fn to_ipv6mr_interface(interface: u32) -> c::c_uint {
 }
 
 // `getsockopt` and `setsockopt` represent boolean values as integers.
-//
-// On Windows, this should use `BOOL`, however windows-sys moved its `BOOL`
-// from `windows_sys::Win32::Foundation::BOOL` to `windows_sys::core::BOOL`
-// in windows-sys 0.60, and we'd prefer
 type RawSocketBool = c::c_int;
 
 // Wrap `RawSocketBool` in a newtype to discourage misuse.

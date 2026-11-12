@@ -1,4 +1,4 @@
-#[cfg(not(any(apple, windows, target_os = "haiku")))]
+#[cfg(not(any(apple, target_os = "haiku")))]
 use rustix::net::SocketFlags;
 use rustix::net::{
     AddressFamily, Ipv6Addr, RecvFlags, SendFlags, SocketAddrAny, SocketAddrV4, SocketAddrV6,
@@ -9,7 +9,6 @@ use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 /// Test `connect` with `SocketAddrAny`.
 #[test]
 fn net_v4_connect_any() {
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -41,10 +40,9 @@ fn net_v4_connect_any() {
 }
 
 /// Test `connect` with `SocketAddrAny` using `accept_with`.
-#[cfg(not(any(apple, windows, target_os = "haiku")))]
+#[cfg(not(any(apple, target_os = "haiku")))]
 #[test]
 fn net_v4_connect_any_accept_with() {
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -78,7 +76,6 @@ fn net_v4_connect_any_accept_with() {
 /// Similar, but with V6.
 #[test]
 fn net_v6_connect_any() {
-    crate::init();
 
     let localhost = IpAddr::V6(Ipv6Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -110,10 +107,9 @@ fn net_v6_connect_any() {
 }
 
 /// Similar, but with V6, using `accept_with`.
-#[cfg(not(any(apple, windows, target_os = "haiku")))]
+#[cfg(not(any(apple, target_os = "haiku")))]
 #[test]
 fn net_v6_connect_any_accept_with() {
-    crate::init();
 
     let localhost = IpAddr::V6(Ipv6Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -147,7 +143,6 @@ fn net_v6_connect_any_accept_with() {
 /// Test `connect` with a `SocketAddr`.
 #[test]
 fn net_v4_connect() {
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -181,7 +176,6 @@ fn net_v4_connect() {
 /// Similar, but use V6.
 #[test]
 fn net_v6_connect() {
-    crate::init();
 
     let localhost = IpAddr::V6(Ipv6Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -218,7 +212,6 @@ fn net_v6_connect() {
 /// Test `connect_unspec`.
 #[test]
 fn net_v4_connect_unspec() {
-    crate::init();
 
     const SOME_PORT: u16 = 47;
     let localhost_addr = SocketAddrV4::new(Ipv4Addr::LOCALHOST, SOME_PORT);
@@ -260,7 +253,6 @@ fn net_v4_connect_unspec() {
 /// Test `connect_unspec`.
 #[test]
 fn net_v6_connect_unspec() {
-    crate::init();
 
     const SOME_PORT: u16 = 47;
     let localhost_addr = SocketAddrV6::new(Ipv6Addr::LOCALHOST, SOME_PORT, 0, 0);
@@ -302,7 +294,6 @@ fn net_v6_connect_unspec() {
 /// Test `bind` with `SocketAddrAny`.
 #[test]
 fn net_v4_bind_any() {
-    crate::init();
 
     let localhost = Ipv4Addr::LOCALHOST;
     let addr = SocketAddrAny::from(SocketAddrV4::new(localhost, 0));
@@ -335,7 +326,6 @@ fn net_v4_bind_any() {
 /// Similar, but use V6.
 #[test]
 fn net_v6_bind_any() {
-    crate::init();
 
     let localhost = Ipv6Addr::LOCALHOST;
     let addr = SocketAddrAny::from(SocketAddrV6::new(localhost, 0, 0, 0));
@@ -368,7 +358,6 @@ fn net_v6_bind_any() {
 /// Test `sendto`.
 #[test]
 fn net_v4_sendto() {
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -403,7 +392,6 @@ fn net_v4_sendto() {
 /// Similar, but with V6.
 #[test]
 fn net_v6_sendto() {
-    crate::init();
 
     let localhost = IpAddr::V6(Ipv6Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -438,7 +426,6 @@ fn net_v6_sendto() {
 /// Test `sendto` with `SocketAddrAny`.
 #[test]
 fn net_v4_sendto_any() {
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -472,7 +459,6 @@ fn net_v4_sendto_any() {
 /// Similar, but with V6.
 #[test]
 fn net_v6_sendto_any() {
-    crate::init();
 
     let localhost = IpAddr::V6(Ipv6Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -506,7 +492,6 @@ fn net_v6_sendto_any() {
 /// Test `acceptfrom`.
 #[test]
 fn net_v4_acceptfrom() {
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -555,7 +540,6 @@ fn net_v4_acceptfrom() {
 /// Similar, but with V6.
 #[test]
 fn net_v6_acceptfrom() {
-    crate::init();
 
     let localhost = IpAddr::V6(Ipv6Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);
@@ -604,7 +588,6 @@ fn net_v6_acceptfrom() {
 /// Test `shutdown`.
 #[test]
 fn net_shutdown() {
-    crate::init();
 
     let localhost = IpAddr::V4(Ipv4Addr::LOCALHOST);
     let addr = SocketAddr::new(localhost, 0);

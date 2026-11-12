@@ -6,7 +6,6 @@
 //! `src/polyfill/no_std` is used instead, which doesn't depend on the standard
 //! library.
 
-#[cfg(not(windows))]
 pub mod io {
     pub use std::io::{IoSlice, IoSliceMut};
 }
@@ -27,15 +26,5 @@ pub mod os {
         pub use std::os::unix::io::{
             AsFd, AsRawFd, BorrowedFd, FromRawFd, IntoRawFd, OwnedFd, RawFd,
         };
-    }
-
-    #[cfg(windows)]
-    pub mod windows {
-        pub mod io {
-            pub use std::os::windows::io::{
-                AsRawSocket, AsSocket, BorrowedSocket, FromRawSocket, IntoRawSocket, OwnedSocket,
-                RawSocket,
-            };
-        }
     }
 }

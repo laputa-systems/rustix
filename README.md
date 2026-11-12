@@ -2,7 +2,7 @@
   <h1><code>rustix</code></h1>
 
   <p>
-    <strong>Safe Rust bindings to POSIX/Unix/Linux/Winsock syscalls</strong>
+    <strong>Safe Rust bindings to POSIX/Unix/Linux syscall-like APIs</strong>
   </p>
 
   <strong>A <a href="https://bytecodealliance.org/">Bytecode Alliance</a> project</strong>
@@ -16,7 +16,7 @@
 </div>
 
 `rustix` provides efficient memory-safe and [I/O-safe] wrappers to POSIX-like,
-Unix-like, Linux, and Winsock syscall-like APIs, with configurable backends. It
+Unix-like, and Linux syscall-like APIs, with configurable backends. It
 uses Rust references, slices, and return values instead of raw pointers, and
 [I/O safety types] instead of raw file descriptors, providing memory safety,
 [I/O safety], and [provenance]. It uses `Result`s for reporting errors,
@@ -24,10 +24,15 @@ uses Rust references, slices, and return values instead of raw pointers, and
 to efficiently accept any Rust string type, and several other efficient
 conveniences.
 
-`rustix` is low-level and, and while the `net` API supports [Windows Sockets 2]
-(Winsock), the rest of the APIs do not support Windows; for higher-level and
-more portable APIs built on this functionality, see the [`cap-std`], [`memfd`],
-[`timerfd`], and [`io-streams`] crates, for example.
+`rustix` is low-level; for higher-level and more portable APIs built on this
+functionality, see the [`cap-std`], [`memfd`], [`timerfd`], and [`io-streams`]
+crates, for example.
+
+**This is a fork of [Bytecode Alliance `rustix`] with Windows support
+removed.** Windows is not a supported target of this fork, and the fork does
+not track Windows-specific upstream fixes.
+
+[Bytecode Alliance `rustix`]: https://github.com/bytecodealliance/rustix
 
 `rustix` currently has two backends available:
 
@@ -42,8 +47,7 @@ more portable APIs built on this functionality, see the [`cap-std`], [`memfd`],
       provenance all the way down to the syscalls.
 
  * libc, which uses the [`libc`] crate which provides bindings to native `libc`
-   libraries on Unix-family platforms, and [`windows-sys`] for Winsock on
-   Windows, and is portable to many OS's.
+   libraries on Unix-family platforms, and is portable to many OS's.
 
 The linux_raw backend is enabled by default on platforms which support it. To
 enable the libc backend instead, either enable the "use-libc" cargo feature, or
@@ -175,7 +179,6 @@ always reflect “very old” Linux versions.
 [Rust 1.65]: https://blog.rust-lang.org/2022/11/03/Rust-1.65.0/
 [any current Rust target]: https://doc.rust-lang.org/nightly/rustc/platform-support.html
 [kernel.org]: https://www.kernel.org/releases.html
-[Windows Sockets 2]: https://learn.microsoft.com/en-us/windows/win32/winsock/windows-sockets-start-page-2
 [`nix`]: https://crates.io/crates/nix
 [`unix`]: https://crates.io/crates/unix
 [`nc`]: https://crates.io/crates/nc
@@ -190,7 +193,6 @@ always reflect “very old” Linux versions.
 [I/O safety types]: https://doc.rust-lang.org/stable/std/os/fd/index.html#structs
 [`termios`]: https://crates.io/crates/termios
 [`libc`]: https://crates.io/crates/libc
-[`windows-sys`]: https://crates.io/crates/windows-sys
 [`cap-std`]: https://crates.io/crates/cap-std
 [`memfd`]: https://crates.io/crates/memfd
 [`timerfd`]: https://crates.io/crates/timerfd

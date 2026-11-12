@@ -1,6 +1,6 @@
 //! Hello world, via plain syscalls.
 
-#[cfg(all(feature = "stdio", feature = "std", not(windows)))]
+#[cfg(all(feature = "stdio", feature = "std"))]
 fn main() -> std::io::Result<()> {
     // The message to print. It includes an explicit newline because we're not
     // using `println!`, so we have to include the newline manually.
@@ -33,7 +33,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-#[cfg(any(not(feature = "stdio"), not(feature = "std"), windows))]
+#[cfg(any(not(feature = "stdio"), not(feature = "std")))]
 fn main() -> Result<(), &'static str> {
-    Err("This example requires --features=stdio,std and is not supported on Windows.")
+    Err("This example requires --features=stdio,std.")
 }

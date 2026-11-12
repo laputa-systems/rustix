@@ -18,7 +18,7 @@ use crate::fd::OwnedFd;
 use backend::c;
 use backend::fd::{BorrowedFd, FromRawFd as _, RawFd};
 
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 use {
     crate::io,
     backend::fd::{AsFd, AsRawFd as _},
@@ -481,7 +481,7 @@ pub const fn raw_stderr() -> RawFd {
 }
 
 /// Utility function to safely `dup2` over stdin (fd 0).
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub fn dup2_stdin<Fd: AsFd>(fd: Fd) -> io::Result<()> {
     let fd = fd.as_fd();
@@ -495,7 +495,7 @@ pub fn dup2_stdin<Fd: AsFd>(fd: Fd) -> io::Result<()> {
 }
 
 /// Utility function to safely `dup2` over stdout (fd 1).
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub fn dup2_stdout<Fd: AsFd>(fd: Fd) -> io::Result<()> {
     let fd = fd.as_fd();
@@ -509,7 +509,7 @@ pub fn dup2_stdout<Fd: AsFd>(fd: Fd) -> io::Result<()> {
 }
 
 /// Utility function to safely `dup2` over stderr (fd 2).
-#[cfg(not(any(windows, target_os = "wasi")))]
+#[cfg(not(any(target_os = "wasi")))]
 #[inline]
 pub fn dup2_stderr<Fd: AsFd>(fd: Fd) -> io::Result<()> {
     let fd = fd.as_fd();

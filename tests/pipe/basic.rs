@@ -7,7 +7,6 @@ fn test_basic_pipes() {
 
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "redox",
@@ -36,7 +35,6 @@ fn test_basic_pipes_with() {
 
     #[cfg(not(any(
         solarish,
-        windows,
         target_os = "espidf",
         target_os = "haiku",
         target_os = "redox",
