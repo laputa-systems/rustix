@@ -8,35 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  rustfmt:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - uses: ./.github/actions/install-rust
-      with:
-        toolchain: stable
-    - run: cargo fmt --all -- --check
-
   check:
     name: Check
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        build: [stable, nightly, 1.65]
-        include:
-          - build: stable
-            os: ubuntu-latest
-            rust: stable
-          - build: nightly
-            os: ubuntu-latest
-            rust: nightly
-          - build: 1.65
-            os: ubuntu-latest
-            rust: 1.65
-
+    runs-on: ubuntu-26.04
     env:
       # -D warnings is commented out in our install-rust action; re-add it here.
       RUSTFLAGS: -D warnings -D elided-lifetimes-in-paths --cfg criterion
@@ -45,39 +19,6 @@ jobs:
       with:
         submodules: true
     - uses: ./.github/actions/install-rust
-      with:
-        toolchain: ${{ matrix.rust }}
-
-    - name: Use specific dependency versions for Rust 1.65 compatibility.
-      if: matrix.rust == '1.65'
-      run: |
-        cargo update --package=half --precise=2.2.1
-        cargo update --package=flate2 --precise=1.0.35
-        cargo update --package=serde --precise=1.0.228
-        cargo update --package=web-sys --precise=0.3.104
-        cargo update --package=syn --precise=2.0.106
-        cargo update --package=textwrap --precise=0.16.1
-        cargo update --package=parking_lot --precise=0.12.4
-        cargo update --package=parking_lot_core --precise=0.9.11
-        cargo update --package=lock_api --precise=0.4.13
-        cargo update --package=rayon --precise=1.10.0
-        cargo update --package=rayon-core --precise=1.12.1
-        cargo update --package=quote --precise=1.0.41
-        cargo update --package=itoa --precise=1.0.15
-        cargo update --package=serde_json --precise=1.0.145
-        cargo update --package=log --precise=0.4.28
-        cargo update --package=getrandom --precise=0.3.4
-        cargo update --package=proc-macro2 --precise=1.0.103
-        cargo update --package=unicode-ident --precise=1.0.22
-        cargo update --package=ryu --precise=1.0.20
-        cargo update --package=futures --precise=0.3.31
-        cargo update --package=futures-executor --precise=0.3.31
-        cargo update --package=futures-util --precise=0.3.31
-        cargo update --package=futures-channel --precise=0.3.31
-        cargo update --package=futures-core --precise=0.3.31
-        cargo update --package=futures-io --precise=0.3.31
-        cargo update --package=futures-sink --precise=0.3.31
-        cargo update --package=futures-task --precise=0.3.31
 
     - run: >
         rustup target add
@@ -104,14 +45,11 @@ jobs:
         sparcv9-sun-solaris
         aarch64-linux-android
         aarch64-apple-ios
-    - if: matrix.rust != '1.65'
-      run: >
+    - run: >
         rustup target add
         wasm32-wasip1
         wasm32-wasip2
         x86_64-unknown-fuchsia
-    - if: matrix.rust == '1.65'
-      run: rustup target add x86_64-fuchsia
 
     - run: cargo check --workspace --release -vv --all-targets
     - run: cargo check --workspace --release -vv --features=all-apis --all-targets
@@ -127,14 +65,9 @@ jobs:
     - run: cargo check --workspace --release -vv --target=x86_64-apple-darwin --features=all-apis --all-targets
     - run: cargo check --workspace --release -vv --target=x86_64-unknown-freebsd --features=all-apis --all-targets
     - run: cargo check --workspace --release -vv --target=x86_64-unknown-netbsd --features=all-apis --all-targets
-    - if: matrix.rust != '1.65'
-      run: cargo check --workspace --release -vv --target=wasm32-wasip1 --features=all-apis
-    - if: matrix.rust != '1.65'
-      run: cargo check --workspace --release -vv --target=wasm32-wasip2 --features=all-apis
-    - if: matrix.rust != '1.65'
-      run: cargo check --workspace --release -vv --target=x86_64-unknown-fuchsia --features=all-apis --all-targets
-    - if: matrix.rust == '1.65'
-      run: cargo check --workspace --release -vv --target=x86_64-fuchsia --features=all-apis --all-targets
+    - run: cargo check --workspace --release -vv --target=wasm32-wasip1 --features=all-apis
+    - run: cargo check --workspace --release -vv --target=wasm32-wasip2 --features=all-apis
+    - run: cargo check --workspace --release -vv --target=x86_64-unknown-fuchsia --features=all-apis --all-targets
     - run: cargo check --workspace --release -vv --target=x86_64-unknown-illumos --features=all-apis --all-targets
     - run: cargo check --workspace --release -vv --target=i686-unknown-linux-gnu --features=all-apis --all-targets
     - run: cargo check --workspace --release -vv --target=i686-unknown-linux-musl --features=all-apis --all-targets
@@ -158,14 +91,7 @@ jobs:
 
   check_no_default_features:
     name: Check --no-default-features
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        build: [nightly]
-        include:
-          - build: nightly
-            os: ubuntu-latest
-            rust: nightly
+    runs-on: ubuntu-26.04
 
     env:
       # -D warnings is commented out in our install-rust action; re-add it here.
@@ -175,8 +101,6 @@ jobs:
       with:
         submodules: true
     - uses: ./.github/actions/install-rust
-      with:
-        toolchain: ${{ matrix.rust }}
     - run: cargo check --workspace --release --no-default-features -vv
     - run: cargo check --workspace --release --no-default-features --features use-libc -vv
     - run: cargo check --workspace --release --no-default-features --features all-apis -vv
@@ -190,22 +114,13 @@ jobs:
 
   check_nightly:
     name: Check nightly-only targets
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        build: [nightly]
-        include:
-          - build: nightly
-            os: ubuntu-latest
-            rust: nightly
+    runs-on: ubuntu-26.04
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
     - uses: ./.github/actions/install-rust
-      with:
-        toolchain: ${{ matrix.rust }}
     - run: >
         rustup target add
         x86_64-unknown-redox
@@ -215,22 +130,13 @@ jobs:
 
   check_tier3:
     name: Check selected Tier 3 platforms
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        build: [nightly]
-        include:
-          - build: nightly
-            os: ubuntu-latest
-            rust: nightly
+    runs-on: ubuntu-26.04
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
     - uses: ./.github/actions/install-rust
-      with:
-        toolchain: ${{ matrix.rust }}
       env:
         # See the comments in the libc crate
         RUSTFLAGS: -A improper_ctypes_definitions --cfg criterion
@@ -268,7 +174,7 @@ jobs:
     name: Test
     runs-on: ${{ matrix.os }}
     env:
-      QEMU_BUILD_VERSION: 9.2.0
+      QEMU_BUILD_VERSION: 10.1.2
       # Enabling testing of experimental features.
       # TODO: Re-enable this once the fix for `rustc_attrs` is published.
       # RUSTFLAGS: --cfg rustix_use_experimental_features
@@ -277,7 +183,6 @@ jobs:
         build:
           [
             ubuntu,
-            ubuntu-22.04,
             i686-linux,
             aarch64-linux,
             powerpc-linux,
@@ -285,44 +190,21 @@ jobs:
             riscv64-linux,
             s390x-linux,
             arm-linux,
-            ubuntu-stable,
-            i686-linux-stable,
-            aarch64-linux-stable,
-            riscv64-linux-stable,
-            s390x-linux-stable,
-            powerpc-linux-stable,
-            powerpc64le-linux-stable,
-            arm-linux-stable,
-            ubuntu-1.65,
-            i686-linux-1.65,
-            aarch64-linux-1.65,
-            riscv64-linux-1.65,
-            s390x-linux-1.65,
-            powerpc64le-linux,
-            powerpc64le-linux-1.65,
-            arm-linux-1.65,
             macos-latest,
             macos-15-intel,
-            macos-14,
             musl,
           ]
         include:
           - build: ubuntu
-            os: ubuntu-latest
-            rust: nightly
-          - build: ubuntu-22.04
-            os: ubuntu-22.04
-            rust: nightly
+            os: ubuntu-26.04
           - build: i686-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: i686-unknown-linux-gnu
             gcc_package: gcc-i686-linux-gnu
             gcc: i686-linux-gnu-gcc
             libc_package: libc-dev-i386-cross
           - build: aarch64-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: aarch64-unknown-linux-gnu
             gcc_package: gcc-aarch64-linux-gnu
             gcc: aarch64-linux-gnu-gcc
@@ -330,8 +212,7 @@ jobs:
             qemu_args: -L /usr/aarch64-linux-gnu
             qemu_target: aarch64-linux-user
           - build: powerpc-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: powerpc-unknown-linux-gnu
             gcc_package: gcc-powerpc-linux-gnu
             gcc: powerpc-linux-gnu-gcc
@@ -339,8 +220,7 @@ jobs:
             qemu_args: -L /usr/powerpc-linux-gnu
             qemu_target: ppc-linux-user
           - build: powerpc64le-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: powerpc64le-unknown-linux-gnu
             gcc_package: gcc-powerpc64le-linux-gnu
             gcc: powerpc64le-linux-gnu-gcc
@@ -348,8 +228,7 @@ jobs:
             qemu_args: -L /usr/powerpc64le-linux-gnu
             qemu_target: ppc64le-linux-user
           - build: riscv64-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: riscv64gc-unknown-linux-gnu
             gcc_package: gcc-riscv64-linux-gnu
             gcc: riscv64-linux-gnu-gcc
@@ -357,8 +236,7 @@ jobs:
             qemu_args: -L /usr/riscv64-linux-gnu
             qemu_target: riscv64-linux-user
           - build: s390x-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: s390x-unknown-linux-gnu
             gcc_package: gcc-s390x-linux-gnu
             gcc: s390x-linux-gnu-gcc
@@ -366,136 +244,7 @@ jobs:
             qemu_args: -L /usr/s390x-linux-gnu
             qemu_target: s390x-linux-user
           - build: arm-linux
-            os: ubuntu-latest
-            rust: nightly
-            target: armv5te-unknown-linux-gnueabi
-            gcc_package: gcc-arm-linux-gnueabi
-            gcc: arm-linux-gnueabi-gcc
-            qemu: qemu-arm
-            qemu_args: -L /usr/arm-linux-gnueabi
-            qemu_target: arm-linux-user
-          - build: ubuntu-stable
-            os: ubuntu-latest
-            rust: stable
-          - build: i686-linux-stable
-            os: ubuntu-latest
-            rust: stable
-            target: i686-unknown-linux-gnu
-            gcc_package: gcc-i686-linux-gnu
-            gcc: i686-linux-gnu-gcc
-            libc_package: libc-dev-i386-cross
-          - build: aarch64-linux-stable
-            os: ubuntu-latest
-            rust: stable
-            target: aarch64-unknown-linux-gnu
-            gcc_package: gcc-aarch64-linux-gnu
-            gcc: aarch64-linux-gnu-gcc
-            qemu: qemu-aarch64
-            qemu_args: -L /usr/aarch64-linux-gnu
-            qemu_target: aarch64-linux-user
-          - build: riscv64-linux-stable
-            os: ubuntu-latest
-            rust: stable
-            target: riscv64gc-unknown-linux-gnu
-            gcc_package: gcc-riscv64-linux-gnu
-            gcc: riscv64-linux-gnu-gcc
-            qemu: qemu-riscv64
-            qemu_args: -L /usr/riscv64-linux-gnu
-            qemu_target: riscv64-linux-user
-          - build: s390x-linux-stable
-            os: ubuntu-latest
-            rust: stable
-            target: s390x-unknown-linux-gnu
-            gcc_package: gcc-s390x-linux-gnu
-            gcc: s390x-linux-gnu-gcc
-            qemu: qemu-s390x
-            qemu_args: -L /usr/s390x-linux-gnu
-            qemu_target: s390x-linux-user
-          - build: powerpc-linux-stable
-            os: ubuntu-latest
-            rust: stable
-            target: powerpc-unknown-linux-gnu
-            gcc_package: gcc-powerpc-linux-gnu
-            gcc: powerpc-linux-gnu-gcc
-            qemu: qemu-ppc
-            qemu_args: -L /usr/powerpc-linux-gnu
-            qemu_target: ppc-linux-user
-          - build: powerpc64le-linux-stable
-            os: ubuntu-latest
-            rust: stable
-            target: powerpc64le-unknown-linux-gnu
-            gcc_package: gcc-powerpc64le-linux-gnu
-            gcc: powerpc64le-linux-gnu-gcc
-            qemu: qemu-ppc64le
-            qemu_args: -L /usr/powerpc64le-linux-gnu
-            qemu_target: ppc64le-linux-user
-          - build: arm-linux-stable
-            os: ubuntu-latest
-            rust: stable
-            target: armv5te-unknown-linux-gnueabi
-            gcc_package: gcc-arm-linux-gnueabi
-            gcc: arm-linux-gnueabi-gcc
-            qemu: qemu-arm
-            qemu_args: -L /usr/arm-linux-gnueabi
-            qemu_target: arm-linux-user
-          - build: ubuntu-1.65
-            os: ubuntu-latest
-            rust: 1.65
-          - build: i686-linux-1.65
-            os: ubuntu-latest
-            rust: 1.65
-            target: i686-unknown-linux-gnu
-            gcc_package: gcc-i686-linux-gnu
-            gcc: i686-linux-gnu-gcc
-            libc_package: libc-dev-i386-cross
-          - build: aarch64-linux-1.65
-            os: ubuntu-latest
-            rust: 1.65
-            target: aarch64-unknown-linux-gnu
-            gcc_package: gcc-aarch64-linux-gnu
-            gcc: aarch64-linux-gnu-gcc
-            qemu: qemu-aarch64
-            qemu_args: -L /usr/aarch64-linux-gnu
-            qemu_target: aarch64-linux-user
-          - build: riscv64-linux-1.65
-            os: ubuntu-latest
-            rust: 1.65
-            target: riscv64gc-unknown-linux-gnu
-            gcc_package: gcc-riscv64-linux-gnu
-            gcc: riscv64-linux-gnu-gcc
-            qemu: qemu-riscv64
-            qemu_args: -L /usr/riscv64-linux-gnu
-            qemu_target: riscv64-linux-user
-          - build: s390x-linux-1.65
-            os: ubuntu-latest
-            rust: 1.65
-            target: s390x-unknown-linux-gnu
-            gcc_package: gcc-s390x-linux-gnu
-            gcc: s390x-linux-gnu-gcc
-            qemu: qemu-s390x
-            qemu_args: -L /usr/s390x-linux-gnu
-            qemu_target: s390x-linux-user
-          - build: powerpc-linux-1.65
-            os: ubuntu-latest
-            rust: 1.65
-            target: powerpc-unknown-linux-gnu
-            gcc_package: gcc-powerpc-linux-gnu
-            gcc: powerpc-linux-gnu-gcc
-            qemu: qemu-ppc
-            qemu_args: -L /usr/powerpc-linux-gnu
-            qemu_target: ppc-linux-user
-          - build: powerpc64le-linux-1.65
-            os: ubuntu-latest
-            rust: 1.65
-            target: powerpc64le-unknown-linux-gnu
-            gcc_package: gcc-powerpc64le-linux-gnu
-            gcc: powerpc64le-linux-gnu-gcc
-            qemu: qemu-ppc64le
-            qemu_args: -L /usr/powerpc64le-linux-gnu
-            qemu_target: ppc64le-linux-user
-          - build: arm-linux-1.65
-            os: ubuntu-latest
-            rust: 1.65
+            os: ubuntu-26.04
             target: armv5te-unknown-linux-gnueabi
             gcc_package: gcc-arm-linux-gnueabi
             gcc: arm-linux-gnueabi-gcc
@@ -503,25 +252,17 @@ jobs:
             qemu_args: -L /usr/arm-linux-gnueabi
             qemu_target: arm-linux-user
           - build: macos-latest
-            os: macos-latest
-            rust: stable
+            os: xcode-27
           - build: macos-15-intel
             os: macos-15-intel
-            rust: stable
-          - build: macos-14
-            os: macos-14
-            rust: stable
           - build: musl
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: x86_64-unknown-linux-musl
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
     - uses: ./.github/actions/install-rust
-      with:
-        toolchain: ${{ matrix.rust }}
 
     - name: Configure Cargo target
       run: |
@@ -533,7 +274,7 @@ jobs:
       with:
         path: ${{ runner.tool_cache }}/qemu
         key: qemu-${{ matrix.target }}-${{ env.QEMU_BUILD_VERSION }}-patched
-      if: matrix.target != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.target != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install cross-compilation tools
       run: |
@@ -542,14 +283,14 @@ jobs:
         sudo apt-get install -y ${{ matrix.gcc_package }} ninja-build libglib2.0-dev
         upcase=$(echo ${{ matrix.target }} | awk '{ print toupper($0) }' | sed 's/-/_/g')
         echo CARGO_TARGET_${upcase}_LINKER=${{ matrix.gcc }} >> $GITHUB_ENV
-      if: matrix.gcc_package != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.gcc_package != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install cross-compilation libraries
       run: |
         set -ex
         sudo apt-get update
         sudo apt-get install -y ${{ matrix.libc_package }}
-      if: matrix.libc_package != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.libc_package != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install qemu
       run: |
@@ -581,38 +322,7 @@ jobs:
         patch -p1 < $GITHUB_WORKSPACE/ci/select-setsize.patch
         ./configure --target-list=${{ matrix.qemu_target }} --prefix=${{ runner.tool_cache }}/qemu --disable-tools --disable-slirp --disable-fdt --disable-capstone --disable-docs
         ninja -C build install
-      if: matrix.qemu != '' && matrix.os == 'ubuntu-latest'
-
-    - name: Use specific dependency versions for Rust 1.65 compatibility.
-      if: matrix.rust == '1.65'
-      run: |
-        cargo update --package=half --precise=2.2.1
-        cargo update --package=flate2 --precise=1.0.35
-        cargo update --package=serde --precise=1.0.228
-        cargo update --package=web-sys --precise=0.3.104
-        cargo update --package=syn --precise=2.0.106
-        cargo update --package=textwrap --precise=0.16.1
-        cargo update --package=parking_lot --precise=0.12.4
-        cargo update --package=parking_lot_core --precise=0.9.11
-        cargo update --package=lock_api --precise=0.4.13
-        cargo update --package=rayon --precise=1.10.0
-        cargo update --package=rayon-core --precise=1.12.1
-        cargo update --package=quote --precise=1.0.41
-        cargo update --package=itoa --precise=1.0.15
-        cargo update --package=serde_json --precise=1.0.145
-        cargo update --package=log --precise=0.4.28
-        cargo update --package=getrandom --precise=0.3.4
-        cargo update --package=proc-macro2 --precise=1.0.103
-        cargo update --package=unicode-ident --precise=1.0.22
-        cargo update --package=ryu --precise=1.0.20
-        cargo update --package=futures --precise=0.3.31
-        cargo update --package=futures-executor --precise=0.3.31
-        cargo update --package=futures-util --precise=0.3.31
-        cargo update --package=futures-channel --precise=0.3.31
-        cargo update --package=futures-core --precise=0.3.31
-        cargo update --package=futures-io --precise=0.3.31
-        cargo update --package=futures-sink --precise=0.3.31
-        cargo update --package=futures-task --precise=0.3.31
+      if: matrix.qemu != '' && startsWith(matrix.os, 'ubuntu-')
 
     - run: |
         cargo test --verbose --features=all-apis --release --workspace -- --nocapture
@@ -629,18 +339,15 @@ jobs:
         build: [ubuntu, i686-linux, aarch64-linux, powerpc-linux, powerpc64le-linux, riscv64-linux, s390x-linux, arm-linux]
         include:
           - build: ubuntu
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
           - build: i686-linux
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: i686-unknown-linux-gnu
             gcc_package: gcc-i686-linux-gnu
             gcc: i686-linux-gnu-gcc
             libc_package: libc-dev-i386-cross
           - build: aarch64-linux
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: aarch64-unknown-linux-gnu
             gcc_package: gcc-aarch64-linux-gnu
             gcc: aarch64-linux-gnu-gcc
@@ -648,8 +355,7 @@ jobs:
             qemu_args: -L /usr/aarch64-linux-gnu
             qemu_target: aarch64-linux-user
           - build: powerpc-linux
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: powerpc-unknown-linux-gnu
             gcc_package: gcc-powerpc-linux-gnu
             gcc: powerpc-linux-gnu-gcc
@@ -657,8 +363,7 @@ jobs:
             qemu_args: -L /usr/powerpc-linux-gnu
             qemu_target: ppc-linux-user
           - build: powerpc64le-linux
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: powerpc64le-unknown-linux-gnu
             gcc_package: gcc-powerpc64le-linux-gnu
             gcc: powerpc64le-linux-gnu-gcc
@@ -666,8 +371,7 @@ jobs:
             qemu_args: -L /usr/powerpc64le-linux-gnu
             qemu_target: ppc64le-linux-user
           - build: riscv64-linux
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: riscv64gc-unknown-linux-gnu
             gcc_package: gcc-riscv64-linux-gnu
             gcc: riscv64-linux-gnu-gcc
@@ -675,8 +379,7 @@ jobs:
             qemu_args: -L /usr/riscv64-linux-gnu
             qemu_target: riscv64-linux-user
           - build: s390x-linux
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: s390x-unknown-linux-gnu
             gcc_package: gcc-s390x-linux-gnu
             gcc: s390x-linux-gnu-gcc
@@ -684,8 +387,7 @@ jobs:
             qemu_args: -L /usr/s390x-linux-gnu
             qemu_target: s390x-linux-user
           - build: arm-linux
-            os: ubuntu-latest
-            rust: stable
+            os: ubuntu-26.04
             target: armv7-unknown-linux-gnueabihf
             gcc_package: gcc-arm-linux-gnueabihf
             gcc: arm-linux-gnueabihf-gcc
@@ -695,14 +397,12 @@ jobs:
     env:
       # -D warnings is commented out in our install-rust action; re-add it here.
       RUSTFLAGS: -D warnings -D elided-lifetimes-in-paths
-      QEMU_BUILD_VERSION: 9.2.0
+      QEMU_BUILD_VERSION: 10.1.2
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
     - uses: ./.github/actions/install-rust
-      with:
-        toolchain: ${{ matrix.rust }}
 
     - name: Configure Cargo target
       run: |
@@ -714,7 +414,7 @@ jobs:
       with:
         path: ${{ runner.tool_cache }}/qemu
         key: qemu-${{ matrix.target }}-${{ env.QEMU_BUILD_VERSION }}-patched
-      if: matrix.target != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.target != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install cross-compilation tools
       run: |
@@ -723,14 +423,14 @@ jobs:
         sudo apt-get install -y ${{ matrix.gcc_package }} ninja-build libglib2.0-dev
         upcase=$(echo ${{ matrix.target }} | awk '{ print toupper($0) }' | sed 's/-/_/g')
         echo CARGO_TARGET_${upcase}_LINKER=${{ matrix.gcc }} >> $GITHUB_ENV
-      if: matrix.gcc_package != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.gcc_package != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install cross-compilation libraries
       run: |
         set -ex
         sudo apt-get update
         sudo apt-get install -y ${{ matrix.libc_package }}
-      if: matrix.libc_package != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.libc_package != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install qemu
       run: |
@@ -762,7 +462,7 @@ jobs:
         patch -p1 < $GITHUB_WORKSPACE/ci/select-setsize.patch
         ./configure --target-list=${{ matrix.qemu_target }} --prefix=${{ runner.tool_cache }}/qemu --disable-tools --disable-slirp --disable-fdt --disable-capstone --disable-docs
         ninja -C build install
-      if: matrix.qemu != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.qemu != '' && startsWith(matrix.os, 'ubuntu-')
 
     - run: |
         cargo test --verbose --features=use-libc,all-apis --release --workspace -- --nocapture
@@ -770,7 +470,7 @@ jobs:
         RUST_BACKTRACE: full
 
   test_vmactions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -805,8 +505,7 @@ jobs:
         build: [powerpc-linux, powerpc64le-linux, s390x-linux]
         include:
           - build: powerpc-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: powerpc-unknown-linux-gnu
             gcc_package: gcc-powerpc-linux-gnu
             gcc: powerpc-linux-gnu-gcc
@@ -814,8 +513,7 @@ jobs:
             qemu_args: -L /usr/powerpc-linux-gnu
             qemu_target: ppc-linux-user
           - build: powerpc64le-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: powerpc64le-unknown-linux-gnu
             gcc_package: gcc-powerpc64le-linux-gnu
             gcc: powerpc64le-linux-gnu-gcc
@@ -823,8 +521,7 @@ jobs:
             qemu_args: -L /usr/powerpc64le-linux-gnu
             qemu_target: ppc64le-linux-user
           - build: s390x-linux
-            os: ubuntu-latest
-            rust: nightly
+            os: ubuntu-26.04
             target: s390x-unknown-linux-gnu
             gcc_package: gcc-s390x-linux-gnu
             gcc: s390x-linux-gnu-gcc
@@ -838,14 +535,12 @@ jobs:
       CARGO_TARGET_POWERPC_UNKNOWN_LINUX_GNU_RUSTFLAGS: --cfg rustix_use_experimental_asm
       CARGO_TARGET_POWERPC64LE_UNKNOWN_LINUX_GNU_RUSTFLAGS: --cfg rustix_use_experimental_asm
       CARGO_TARGET_S390X_UNKNOWN_LINUX_GNU_RUSTFLAGS: --cfg rustix_use_experimental_asm
-      QEMU_BUILD_VERSION: 9.2.0
+      QEMU_BUILD_VERSION: 10.1.2
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
     - uses: ./.github/actions/install-rust
-      with:
-        toolchain: ${{ matrix.rust }}
 
     - name: Configure Cargo target
       run: |
@@ -857,7 +552,7 @@ jobs:
       with:
         path: ${{ runner.tool_cache }}/qemu
         key: qemu-${{ matrix.target }}-${{ env.QEMU_BUILD_VERSION }}-patched
-      if: matrix.target != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.target != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install cross-compilation tools
       run: |
@@ -866,14 +561,14 @@ jobs:
         sudo apt-get install -y ${{ matrix.gcc_package }} ninja-build libglib2.0-dev
         upcase=$(echo ${{ matrix.target }} | awk '{ print toupper($0) }' | sed 's/-/_/g')
         echo CARGO_TARGET_${upcase}_LINKER=${{ matrix.gcc }} >> $GITHUB_ENV
-      if: matrix.gcc_package != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.gcc_package != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install cross-compilation libraries
       run: |
         set -ex
         sudo apt-get update
         sudo apt-get install -y ${{ matrix.libc_package }}
-      if: matrix.libc_package != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.libc_package != '' && startsWith(matrix.os, 'ubuntu-')
 
     - name: Install qemu
       run: |
@@ -905,7 +600,7 @@ jobs:
         patch -p1 < $GITHUB_WORKSPACE/ci/select-setsize.patch
         ./configure --target-list=${{ matrix.qemu_target }} --prefix=${{ runner.tool_cache }}/qemu --disable-tools --disable-slirp --disable-fdt --disable-capstone --disable-docs
         ninja -C build install
-      if: matrix.qemu != '' && matrix.os == 'ubuntu-latest'
+      if: matrix.qemu != '' && startsWith(matrix.os, 'ubuntu-')
 
     - run: |
         cargo test --verbose --features=all-apis --release --workspace -- --nocapture

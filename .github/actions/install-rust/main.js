@@ -1,5 +1,4 @@
 const child_process = require('child_process');
-const toolchain = process.env.INPUT_TOOLCHAIN;
 const fs = require('fs');
 
 function set_env(name, val) {
@@ -11,18 +10,6 @@ function set_env(name, val) {
 if (process.platform === 'win32') {
   child_process.execFileSync('rustup', ['self', 'update']);
 }
-
-child_process.execFileSync('rustup', ['set', 'profile', 'minimal']);
-child_process.execFileSync('rustup', ['update', toolchain, '--no-self-update']);
-child_process.execFileSync('rustup', ['default', toolchain]);
-
-// Deny warnings on CI to keep our code warning-free as it lands in-tree. Don't
-// do this on nightly though since there's a fair amount of warning churn there.
-// RUSTIX: Disable this so that it doesn't overwrite RUSTFLAGS for setting
-// "--cfg rustix_use_libc". We re-add it manually in the workflow.
-//if (!toolchain.startsWith('nightly')) {
-//  set_env("RUSTFLAGS", "-D warnings");
-//}
 
 // Save disk space by avoiding incremental compilation, and also we don't use
 // any caching so incremental wouldn't help anyway.
