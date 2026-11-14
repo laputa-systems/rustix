@@ -7,7 +7,7 @@ publish-dry-run: ## Check the laputa-rustix publish without uploading or promoti
 .PHONY: lint clean
 
 lint:
-	cargo clippy --lib --tests --locked
+	cargo clippy --lib --tests
 
 clean:
 	find . -path './.git' -prune -o -path './.work' -prune -o -name target -type d -prune -exec rm -rf {} +
