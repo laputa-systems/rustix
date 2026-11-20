@@ -9,15 +9,6 @@ Not started.
 
 ## Tickets
 
-### DSLP-1 · P2 · Ground: baseline, boundaries, and CI test entry point
-
-- **Area:** deslop · ground
-- **Where:** AGENTS.md, Makefile, .github/workflows/
-- **Problem:** Base 8fdf95b; code lines Rust 61.4k (fleet/loc/v1, vendored included); timings not yet measured. Fork of bytecodealliance/rustix (main); work only our changes against the upstream merge base (+0.2k/-1.5k, mostly Windows removal); upstream code stays untouched. CI does not run make test: runs tests directly on pull requests; run make test or make test-ci instead so CI and local verification share one entry point. The root Makefile has no test target. Over 50k lines, so Types, Tests, and Dead code run per component; largest first-party groups: src/backend (37k), tests (14k), src/net (6k), src/(top-level files) (6k), src/fs (3k), src/process (3k), src/thread (2k), src/io_uring (2k), and 1 more. Consumers in the fleet: e, tinyland; their tests are the consumer check for API changes. Perf gate: decide in Ground whether a user-visible hot path needs a workload.
-- **Recommendation:** Run the deslop Ground step. Accept: CI runs make test and is green, and AGENTS.md has a Verification section.
-- **Fix with:** deslop
-- **Effort:** M
-
 ### DSLP-2 · P2 · Diagnose: ultrareview into this backlog
 
 - **Area:** deslop · diagnose

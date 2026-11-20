@@ -4,7 +4,10 @@ publish: ## Publish laputa-rustix to the stuff crates registry
 publish-dry-run: ## Check the laputa-rustix publish without uploading or promoting
 	stuff publish cargo -p laputa-rustix --dry-run
 
-.PHONY: lint clean
+.PHONY: test lint clean
+
+test:
+	cargo test --workspace --features all-apis
 
 lint:
 	cargo clippy --lib --tests
