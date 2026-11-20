@@ -8,3 +8,6 @@
 - Consumers: e and tinyland; run their tests against this checkout when changing public API behavior.
 - Performance: `benches/mod.rs` measures filesystem, clock and process syscall wrappers; no representative consumer workload is established.
 - Components: `src/backend`, `src/net`, `src/fs`, `src/process`, `src/thread`, `src/io_uring`, other `src` modules, and `tests`.
+- Test tiers: Edit `cargo test --features all-apis --test net sockopt::test_sockopts_ipv4 -- --exact` (cost unmeasured); Change `make test` (full all-API suite, locally stops at the host filesystem failures); Full is the CI platform and feature matrix, manual/hosted only.
+- Supplemental macOS check: `cargo test --workspace --features all-apis -- --skip xattr::xattr_basic --skip xattr::set --skip seek::test_seek_holes` passed in 104.71s on a busy host; the excluded contracts still require the full suite on ext4.
+- Needs environment: `cargo-llvm-cov` and `cargo-mutants` are unavailable; hand-injected faults replace mutation tooling for the scoped critical boundary.
