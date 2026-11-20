@@ -1,5 +1,5 @@
 Prefix: DSLP
-Next: 6
+Next: 7
 
 Deslop campaign backlog ([plan](https://github.com/laputa-systems/stuff/blob/main/docs/campaigns/deslop.md), tier E). One agent works this file with the `deslop` skill: take the lowest-numbered open ticket whose area does not start with `Needs owner ·`. After DSLP-5, work the open P1 and P2 findings, then fill in `## Report` below.
 
@@ -8,15 +8,6 @@ Deslop campaign backlog ([plan](https://github.com/laputa-systems/stuff/blob/mai
 Not started.
 
 ## Tickets
-
-### DSLP-2 · P2 · Diagnose: ultrareview into this backlog
-
-- **Area:** deslop · diagnose
-- **Where:** whole repository (our changes against upstream)
-- **Problem:** No review has ranked this repository's risks for the deslop pass.
-- **Recommendation:** Run the deslop Diagnose step. Accept: the diff touches only docs, comments, and this file, and every finding names its Fix with.
-- **Fix with:** deslop
-- **Effort:** M
 
 ### DSLP-3 · P2 · Types: strict profile and typing findings
 
@@ -44,4 +35,13 @@ Not started.
 - **Recommendation:** Run the deslop Dead code step. Accept: tools clean or allowlisted with reasons; walk-backs filed as Needs owner tickets.
 - **Fix with:** deslop
 - **Effort:** M
+
+### DSLP-6 · P3 · Point fork badges at the fork package and CI
+
+- **Area:** documentation
+- **Where:** README.md:8-14
+- **Problem:** The fork README identifies the Windows-free fork, but its CI, crate and API badges still link to bytecodealliance/rustix and the upstream rustix package. Readers following those badges see upstream status and documentation rather than this fork.
+- **Recommendation:** Choose fork-specific status and package links and update the badge destinations when authorized to edit the inherited lines.
+- **Fix with:** technical-writing
+- **Effort:** S
 
