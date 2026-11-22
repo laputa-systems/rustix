@@ -25,10 +25,11 @@ case "$mode" in
   *) printf '%s\n' 'usage: run.sh list|check|edit|full|change WORKLOAD|dry-run WORKLOAD' >&2; exit 2 ;;
 esac
 
+samples=10
 command=(cargo bench --bench mod --features fs,time,process,stdio --)
 case "$mode" in
   edit) command+=(--test) ;;
-  change|dry-run) command+=("$filter" --sample-size 10 --warm-up-time 0.1 --measurement-time 0.1 --noplot) ;;
+  change|dry-run) command+=("$filter" --sample-size "$samples" --warm-up-time 0.1 --measurement-time 0.1 --noplot) ;;
 esac
 if [[ "$mode" == dry-run ]]; then
   printf 'RUSTFLAGS=--cfg=criterion'; printf ' %q' "${command[@]}"; printf '\n'
@@ -36,6 +37,9 @@ if [[ "$mode" == dry-run ]]; then
 fi
 command -v cargo >/dev/null || { printf '%s\n' 'cargo is missing; install the pinned toolchain before running benchmarks.' >&2; exit 1; }
 command -v rustc >/dev/null || { printf '%s\n' 'rustc is missing; install the pinned toolchain before running benchmarks.' >&2; exit 1; }
+if [[ "$mode" == check || "$mode" == change ]]; then
+  command -v jaq >/dev/null || { printf '%s\n' 'jaq is required to verify Criterion results.' >&2; exit 1; }
+fi
 cargo --version
 rustc --version
 df -Pk .
@@ -62,14 +66,22 @@ if (( statuses[1] != 0 )); then
   result=1
 fi
 if [[ "$mode" == change && "$result" -eq 0 ]]; then
-  matched=0
-  while IFS= read -r line; do
-    case "$line" in "Benchmarking $filter"*) matched=1; break ;; esac
-  done < "$run_dir/output.log"
-  if (( matched == 0 )); then
-    printf 'No benchmark matched: %s\n' "$filter" >&2
-    result=1
+  expected=("$filter" "$filter libc")
+  if [[ "$workload" == statat ]]; then
+    expected+=("$filter cstr" "$filter libc cstr")
   fi
+  for benchmark in "${expected[@]}"; do
+    data="$CRITERION_HOME/$benchmark/new"
+    if ! jaq -e --argjson samples "$samples" '
+      (.iters | (length == $samples) and all(.[]; type == "number" and . > 0)) and
+      (.times | (length == $samples) and all(.[]; type == "number" and . >= 0))
+    ' "$data/sample.json" >/dev/null || ! jaq -e '
+      .median.point_estimate | type == "number" and . >= 0
+    ' "$data/estimates.json" >/dev/null; then
+      printf 'Missing or incomplete Criterion measurements: %s\n' "$benchmark" >&2
+      result=1
+    fi
+  done
 fi
 printf 'exit=%s elapsed_seconds=%s timing=informational\n' "$result" "$(($(date +%s) - started))" | tee "$run_dir/status"
 exit "$result"
