@@ -4,7 +4,7 @@ publish: ## Publish laputa-rustix to the stuff crates registry
 publish-dry-run: ## Check the laputa-rustix publish without uploading or promoting
 	stuff publish cargo -p laputa-rustix --dry-run
 
-.PHONY: test lint clean bench-check bench-list bench-edit bench-change bench-dry-run bench
+.PHONY: test lint clean bench-check bench-list bench-edit bench-change bench-dry-run bench bench-full
 
 test:
 	cargo test --workspace --features all-apis
@@ -13,7 +13,10 @@ lint:
 	cargo clippy --lib --tests
 
 clean:
-	find . -path './.git' -prune -o -path './.work' -prune -o -name target -type d -prune -exec rm -rf {} +
+	@if test -L ./target || { test -e ./target && ! test -d ./target; }; then \
+	  printf '%s\n' 'make clean: ./target must be a local build directory' >&2; exit 1; \
+	fi
+	rm -rf -- ./target
 
 BENCH_CASE ?= getpid
 
@@ -32,5 +35,7 @@ bench-change:
 bench-dry-run:
 	bash benches/run.sh dry-run "$(BENCH_CASE)"
 
-bench:
+bench: bench-change
+
+bench-full:
 	bash benches/run.sh full
